@@ -1,0 +1,16 @@
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  chat_input:
+    type: string
+outputs:
+  context:
+    type: string
+  reply:
+    type: string
+    is_chat_output: true
+entry: entry:flow_entry_copilot_sdk
+environment:
+  python_requirements_txt: requirements.txt

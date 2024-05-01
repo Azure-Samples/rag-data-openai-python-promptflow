@@ -1,0 +1,7 @@
+openai
+azure-identity
+azure-search-documents==11.4.0
+promptflow[azure]
+jinja2
+aiohttp
+python-dotenv

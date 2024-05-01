@@ -1,0 +1,12 @@
+$schema: https://azuremlschemas.azureedge.net/latest/model.schema.json
+path: ../src/copilot_sdk_flow
+stage: Production
+description: register copilot_sdk_flow folder as a custom model
+properties:
+  # Following are properties only for chat flow 
+  # endpoint detail UI Test tab needs this property to know it's a chat flow
+  azureml.promptflow.mode: chat
+  # endpoint detail UI Test tab needs this property to know which is the input column for chat flow
+  azureml.promptflow.chat_input: chat_input
+  # endpoint detail UI Test tab needs this property to know which is the output column for chat flow
+  azureml.promptflow.chat_output: reply
