@@ -50,7 +50,6 @@ def get_documents(query, num_docs=2):
 
 def chat_completion(messages: list[dict], stream: bool = False,
                           session_state: any = None, context: dict[str, any] = {}):
-    print("hello in chat")
     # get search documents for the last user message in the conversation
     user_message = messages[-1]["content"]
     documents = get_documents(user_message, context.get("num_retrieved_docs", 2))
@@ -65,8 +64,6 @@ def chat_completion(messages: list[dict], stream: bool = False,
     system_message = system_message_template.render(context=context)
 
     messages.insert(0, {"role": "system", "content": system_message})
-
-    print("@@ INSIDE CHAT COMPLETION: ")
 
     aoai_client = AzureOpenAI(
         azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
