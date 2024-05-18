@@ -1,0 +1,11 @@
+.env
+__pycache__/
+.promptflow/
+!.promptflow/flow.tools.json
+!.promptflow/flow.detail.json
+!.promptflow/flow.log.json
+!.promptflow/flow.output.json
+!.promptflow/ux.inputs.json
+.runs/
+.venv/
+.azure/
