@@ -1,0 +1,3 @@
+entry: sample:entry
+environment:
+  python_requirements_txt: requirements.txt
