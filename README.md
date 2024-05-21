@@ -180,19 +180,18 @@ Evaluation relies on an evaluation dataset. In this case, we have an evaluation 
 
 The following script streamlines the evaluation process. Update the evaluation code to set your desired evaluation metrics, or optionally evaluate on custom metrics. You can also change where the evaluation results get written to.
 
-We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models. To enable logging to your cloud project, add your configurations (which you can find in your .env file) and run the following command:
+We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models.
+Note that this will configure your project with a Cosmos DB account for logging. It may take several minutes the first time you run an evaluation.
 
-```bash
-pf config set trace.destination=azureml://subscriptions/<subscription_id>/resourceGroups/<resource_group>/providers/Microsoft.MachineLearningServices/workspaces/<project_name>
-```
 
-This will configure your project with a Cosmos DB account for logging. Be mindful this has associated costs.
 
 ``` bash
 python -m evaluation.evaluate --evaluation-name <evaluation_name>
 ```
 
 Specify the `--dataset-path` argument if you want to provide a different evaluation dataset.
+
+If you do not want to log evaluation results to your AI Studio project, you can modify the _evaluation.py_ script to not pass the azure_ai_project parameter.
 
 ## Step 8: Deploy application to AI Studio
 

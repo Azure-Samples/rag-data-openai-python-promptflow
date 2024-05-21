@@ -60,6 +60,12 @@ def run_evaluation(name, dataset_path):
             "relevance": {"question": "${data.chat_input}"},
             "coherence": {"question": "${data.chat_input}"},
         },
+        # to log evaluation to the cloud AI Studio project
+        azure_ai_project = {
+            "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],
+            "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
+            "project_name": os.environ["AZUREAI_PROJECT_NAME"]
+        }
     )
     
     tabular_result = pd.DataFrame(result.get("rows"))
