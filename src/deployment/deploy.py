@@ -85,19 +85,18 @@ def deploy_flow(endpoint_name, deployment_name):
     # 3. update endpoint traffic for the deployment
     endpoint.traffic = {deployment_name: 100} # 100% of traffic
     client.begin_create_or_update(endpoint).result()
-
-    created_endpoint_name = created_endpoint["name"]
-    created_deployment_name = created_deployment["name"]
   
-    output_deployment_details(client, created_endpoint_name, created_deployment_name)
+    output_deployment_details(client, endpoint_name, deployment_name)
+
     return created_endpoint, created_deployment
 
 def output_deployment_details(client, endpoint_name, deployment_name) -> str:
+    print("\n ~~~Deployment details~~~")
     print(f"Your online endpoint name is: {endpoint_name}")
     print(f"Your deployment name is: {deployment_name}")
     
     print("\n ~~~Test in the Azure AI Studio~~~")
-    print(f"Follow this link to test your deployment in the Azure AI Studio:")
+    print(f"Follow this link to your deployment in the Azure AI Studio:")
     print(get_ai_studio_url_for_deploy(client=client, endpoint_name=endpoint_name, deployment_name=deployment_name))
         
 if __name__ == "__main__":
