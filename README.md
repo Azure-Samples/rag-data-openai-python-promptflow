@@ -81,7 +81,7 @@ You can find the details you need for existing resources in the top-right projec
     You can also try running our experimental script to check quota in your subscription. You can modify it to fit your requirements.
 
     > [!NOTE]
-    > Note: this script is a tentative to help locating quota, but it might provide numbers that are not accurate. The Azure AI Studio or the [Azure OpenAI portal](https://oai.azure.com/), and our [docs of quota limits](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) would be the source of truth.
+    > This script is intended to help understand quota, but it might provide numbers that are not accurate. The Azure AI Studio or the [Azure OpenAI portal](https://oai.azure.com/), and our [docs of quota limits](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) would be the source of truth.
 
     ```bash
     python provisioning/check_quota.py --subscription-id <your-subscription-id>
@@ -149,9 +149,10 @@ This sample includes custom code to add retrieval augmented generation (RAG) to 
 
 The code follows the following general logic:
 
-1. Uses an embedding model to embed the the user's query
+1. Generates a search query based on user query intent and any chat history
+1. Uses an embedding model to embed the query
 1. Retrieves relevant documents from the search index, given the query
-1. Integrates the document context into messages passed to chat completion model
+1. Passes the relevant context to the Azure Open AI chat completion model
 1. Returns the response from the Azure Open AI model
 
 You can modify this logic as appropriate to fit your use case.
@@ -172,7 +173,7 @@ If you want to test with chat_history, you can use or update the sample input js
 pf flow test --flow ./copilot_flow --inputs ./copilot_flow/input_with_chat_history.json
 ```
 
-## Step 7: Batch evaluate, iterate, evaluate again (eval compare in AI Studio)
+## Step 7: Evaluate copilot performance
 
 Evaluation is a key part of developing a copilot application. Once you have validated your logic on a sample set of inputs, its time to test it on a larger set of inputs.
 
@@ -180,16 +181,17 @@ Evaluation relies on an evaluation dataset. In this case, we have an evaluation 
 
 The following script streamlines the evaluation process. Update the evaluation code to set your desired evaluation metrics, or optionally evaluate on custom metrics. You can also change where the evaluation results get written to.
 
-We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models.
-Note that this will configure your project with a Cosmos DB account for logging. It may take several minutes the first time you run an evaluation.
-
-
-
 ``` bash
 python -m evaluation.evaluate --evaluation-name <evaluation_name>
 ```
 
 Specify the `--dataset-path` argument if you want to provide a different evaluation dataset.
+
+We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models. The _evaluate.py_ script is set up to log your evaluation results to your AI Studio project. 
+
+> [!NOTE]
+> This will configure your project with a Cosmos DB account for logging. It may take several minutes the first time you run an evaluation.
+
 
 If you do not want to log evaluation results to your AI Studio project, you can modify the _evaluation.py_ script to not pass the azure_ai_project parameter.
 
@@ -217,7 +219,7 @@ We recommend you test your application in the Azure AI Studio. The previous step
 
 Navigate to the Test tab, and try asking a question in the chat interface. You should see the response come back and you have verified your deployment!
 
-If you prefer to test your deployed endpoint locally, you can invoke it with a sample question.
+If you prefer to test your deployed endpoint locally, you can invoke it with a default query.
 
 ``` bash
 python -m deployment.invoke --endpoint-name <endpoint_name> --deployment-name <deployment_name>
