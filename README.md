@@ -12,7 +12,7 @@ Following the below steps, you will: set up your development environment, create
 ### Option 1: Explore sample with Codespaces
 
 - To get started quickly with this sample, you can use a pre-built Codespaces development environment. **Click the button below** to open this repo in GitHub Codespaces, and then continue the readme!
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure/aistudio-azd-ragChatApp?quickstart=1)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/rag-data-openai-python-promptflow?quickstart=1)
 
 - Once you've launched Codespaces you can proceed to step 2.
 
