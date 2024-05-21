@@ -110,7 +110,7 @@ This sample repository contains a sample chat prompty file you can explore. This
 
 This pattern was covered in the [hello world prompting sample](https://github.com/Azure-Samples/ai-studio-hello-world), showing how the Prompty file format let's you streamline your LLM calls.
 
-You can test your connection to your Azure Open AI model by running only the sample prompt. Try changing up the specified system prompt to see how the model behaves with additional prompting.
+You can test your connection to your Azure OpenAI model by running only the sample prompt. Try changing up the specified system prompt to see how the model behaves with additional prompting.
 
 ``` bash
 cd ..
@@ -152,8 +152,8 @@ The code follows the following general logic:
 1. Generates a search query based on user query intent and any chat history
 1. Uses an embedding model to embed the query
 1. Retrieves relevant documents from the search index, given the query
-1. Passes the relevant context to the Azure Open AI chat completion model
-1. Returns the response from the Azure Open AI model
+1. Passes the relevant context to the Azure OpenAI chat completion model
+1. Returns the response from the Azure OpenAI model
 
 You can modify this logic as appropriate to fit your use case.
 
