@@ -57,7 +57,7 @@ def deploy_flow(endpoint_name, deployment_name):
         ),
         # instance type comes with associated cost.
         # make sure you have quota for the specified instance type
-        # See more details here: https://learn.microsoft.com/en-us/azure/machine-learning/reference-managed-online-endpoints-vm-sku-list?view=azureml-api-2
+        # See more details here: https://learn.microsoft.com/azure/machine-learning/reference-managed-online-endpoints-vm-sku-list
         instance_type="Standard_DS3_v2",
         instance_count=1,
         environment_variables={
@@ -77,10 +77,10 @@ def deploy_flow(endpoint_name, deployment_name):
     )
 
     # 1. create endpoint
-    created_endpoint = client.begin_create_or_update(endpoint).result() # result() means we wait on this to complete
+    client.begin_create_or_update(endpoint).result() # result() means we wait on this to complete
 
     # 2. create deployment
-    created_deployment = client.begin_create_or_update(deployment).result()
+    client.begin_create_or_update(deployment).result()
 
     # 3. update endpoint traffic for the deployment
     endpoint.traffic = {deployment_name: 100} # 100% of traffic
@@ -88,15 +88,13 @@ def deploy_flow(endpoint_name, deployment_name):
   
     output_deployment_details(client, endpoint_name, deployment_name)
 
-    return created_endpoint, created_deployment
-
 def output_deployment_details(client, endpoint_name, deployment_name) -> str:
     print("\n ~~~Deployment details~~~")
     print(f"Your online endpoint name is: {endpoint_name}")
     print(f"Your deployment name is: {deployment_name}")
     
     print("\n ~~~Test in the Azure AI Studio~~~")
-    print(f"Follow this link to your deployment in the Azure AI Studio:")
+    print("\n Follow this link to your deployment in the Azure AI Studio:")
     print(get_ai_studio_url_for_deploy(client=client, endpoint_name=endpoint_name, deployment_name=deployment_name))
         
 if __name__ == "__main__":

@@ -44,7 +44,7 @@ def build_aisearch_index(index_name, path_to_data):
       token_overlap_across_chunks = 0, # Optional field - Number of tokens to overlap between chunks
   )
 
-  # register the index so that it shows up in the project
+  # register the index so that it shows up in the cloud project
   client.indexes.create_or_update(Index(name=index_name, path=index_path))
 
   print(f"Local Path: {index_path}")

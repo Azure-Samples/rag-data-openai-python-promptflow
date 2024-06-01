@@ -19,7 +19,7 @@ def load_jsonl(path):
     with open(path, "r") as f:
         return [json.loads(line) for line in f.readlines()]
 
-def copilot_qna(*, chat_input, **kwargs):
+def copilot_wrapper(*, chat_input, **kwargs):
     from copilot_flow.copilot import get_chat_response
 
     result = get_chat_response(chat_input)
@@ -48,7 +48,7 @@ def run_evaluation(name, dataset_path):
     output_path = "./evaluation/eval_results/eval_results.jsonl"
 
     result = evaluate(
-        target=copilot_qna,
+        target=copilot_wrapper,
         evaluation_name=name,
         data=data_path,
         evaluators={

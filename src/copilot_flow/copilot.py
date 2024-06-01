@@ -1,31 +1,29 @@
 # ---------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # ---------------------------------------------------------
-from typing import TypedDict
-
-from openai import AzureOpenAI
-
-import os
-from pathlib import Path
-
-from promptflow.tracing import trace
-
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
-from azure.search.documents.models import VectorizedQuery
-
 import os
 # set environment variables before importing any other code
 from dotenv import load_dotenv
 load_dotenv()
 
+from pathlib import Path
+
+from typing import TypedDict
+
+from openai import AzureOpenAI
+
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents import SearchClient
+from azure.search.documents.models import VectorizedQuery
+
+from promptflow.tracing import trace
+from promptflow.core import Prompty, AzureOpenAIModelConfiguration
+
 class ChatResponse(TypedDict):
     context: dict
     reply: str
 
-from promptflow.core import tool, Prompty, AzureOpenAIModelConfiguration
-
-@tool
+@trace
 def get_chat_response(chat_input: str, chat_history: list = []) -> ChatResponse:
 
     model_config = AzureOpenAIModelConfiguration(
@@ -75,7 +73,7 @@ def get_documents(search_query: str, num_docs=3):
 
     index_name = os.environ["AZUREAI_SEARCH_INDEX_NAME"]
 
-    #  retrieve documents relevant to the user's question from Cognitive Search
+    #  retrieve documents relevant to the user's query from Azure AI Search index
     search_client = SearchClient(
         endpoint=os.environ["AZURE_SEARCH_ENDPOINT"],
         credential=AzureKeyCredential(os.environ["AZURE_SEARCH_KEY"]),

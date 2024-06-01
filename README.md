@@ -56,7 +56,9 @@ If you intend to develop your own code following this sample, we recommend you u
     ```bash
     cd src
     ```
+
     - Next, install the requirements in your venv. Note: this may take several minutes the first time you install.
+
     ``` bash
     pip install -r requirements.txt
     ```
@@ -65,6 +67,7 @@ If you intend to develop your own code following this sample, we recommend you u
     - Note: if you are running from within a Codespace or the curated VS Code cloud container, you will need to use `az login --use-device-code`
 
 ## Step 2: Provision or reference Azure AI resources
+
 Use the provision script to provision new or reference existing Azure AI resources to use in your application.
 
 We have a process to help you easily provision the resources you need to run this sample. You can either create new resources, or specify existing resources.
@@ -81,19 +84,19 @@ You can find the details you need for existing resources in the top-right projec
     You can also try running our experimental script to check quota in your subscription. You can modify it to fit your requirements.
 
     > [!NOTE]
-    > This script is intended to help understand quota, but it might provide numbers that are not accurate. The Azure AI Studio or the [Azure OpenAI portal](https://oai.azure.com/), and our [docs of quota limits](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) would be the source of truth.
+    > This script is intended to help understand quota, but it might provide numbers that are not accurate. The Azure AI Studio or the [Azure OpenAI portal](https://oai.azure.com/), and our [docs of quota limits](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits) would be the source of truth.
 
     ```bash
     python provisioning/check_quota.py --subscription-id <your-subscription-id>
     ```
 
-2. **Open the _provision.yaml_ file** that is located in the `provisioning` directory
+1. **Open the *provision.yaml* file** that is located in the `provisioning` directory
     1. There are notes in the file to help you.
-3. **Input all your desired fields**
+1. **Input all your desired fields**
     1. Note that you can either specify existing resources, or your desired names for new resources. If you are specifying existing resources, you can find the details you need in the Azure AI Studio project view.
     1. Make sure you select a location and deployments you have quota for.
-1. **Run the _provision.py_ script**
-    1. If you want to see the provisioning plan (what _would_ be provisioned given your `provision.yaml` specifications, without actually provisioning anything), run the below script with the `--show-only` flag.
+1. **Run the *provision.py* script**
+    1. If you want to see the provisioning plan (what *would* be provisioned given your `provision.yaml` specifications, without actually provisioning anything), run the below script with the `--show-only` flag.
     1. This script will output a .env in your src/ directory with all of your specified resources, which will be referenced by the rest of the sample code.
 
     ``` bash
@@ -102,7 +105,6 @@ You can find the details you need for existing resources in the top-right projec
     ```
 
     The script will check whether the resources you specified exist, otherwise it will create them. It will then construct a .env for you that references the provisioned or referenced resources, including your keys. Once the provisioning is complete, you'll be ready to move to step 3.
-
 
 ## Step 3: Explore prompts
 
@@ -145,24 +147,24 @@ AZUREAI_SEARCH_INDEX_NAME=<index-name>
 
 ## Step 5: Develop custom code
 
-This sample includes custom code to add retrieval augmented generation (RAG) to our application.
+This sample includes custom code to add retrieval augmented generation (RAG) capabilities to a basic chat application.
 
-The code follows the following general logic:
+The code implements the following general logic:
 
-1. Generates a search query based on user query intent and any chat history
-1. Uses an embedding model to embed the query
-1. Retrieves relevant documents from the search index, given the query
-1. Passes the relevant context to the Azure Open AI chat completion model
-1. Returns the response from the Azure Open AI model
+1. Generate a search query based on user query intent and any chat history
+1. Use an embedding model to embed the query
+1. Retrieve relevant documents from the search index, given the query
+1. Pass the relevant context to the Azure Open AI chat completion model
+1. Return the response from the Azure Open AI model
 
 You can modify this logic as appropriate to fit your use case.
 
 ## Step 6: Use prompt flow to test copilot code
 
-Use the built-in prompt flow front end to locally serve your application, and validate your copilot performs as expected on sample inputs.
+Use prompt flow's testing capability to validate how your copilot performs as expected on sample inputs.
 
 ``` bash
-pf flow test --flow ./copilot_flow --inputs chat_input="how much for the Trailwalker shoes cost?"
+pf flow test --flow ./copilot_flow --inputs chat_input="how much do the Trailwalker shoes cost?"
 ```
 
 You can use the `--ui` flag to test interactively with a sample chat experience. Prompt flow locally serves a front end integrated with your code.

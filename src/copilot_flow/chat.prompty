@@ -1,6 +1,6 @@
 ---
 name: Chat Prompt
-description: A prompty that uses the chat API to respond to queries
+description: A prompty that uses the chat API to respond to queries grounded in relevant documents
 model:
     api: chat
     configuration:
