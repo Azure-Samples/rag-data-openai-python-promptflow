@@ -499,7 +499,7 @@ class ConnectionSpec(BaseModel):
             )
 
             # create connection
-            return ml_client.connections.create_or_update(connection=connection_config)
+            return ml_client.connections.create_or_update(workspace_connection=connection_config)
         if isinstance(self.resource, AzureOpenAIResource):
             rsc_client = CognitiveServicesManagementClient(
                 credential=DefaultAzureCredential(),
