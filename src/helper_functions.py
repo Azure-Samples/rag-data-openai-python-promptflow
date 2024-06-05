@@ -7,7 +7,7 @@ load_dotenv()
 
 def get_client() -> MLClient:
   # check if env variables are set and initialize client from those
-  client = MLClient(DefaultAzureCredential(), os.environ["AZURE_SUBSCRIPTION_ID"], os.environ["AZURE_RESOURCE_GROUP"], os.environ["AZUREAI_PROJECT_NAME"])
+  client = MLClient(DefaultAzureCredential(), os.getenv("AZURE_SUBSCRIPTION_ID"), os.getenv("AZURE_RESOURCE_GROUP"), os.getenv("AZUREAI_PROJECT_NAME"))
   if client:
     return client
   

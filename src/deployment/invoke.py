@@ -1,9 +1,8 @@
+import requests
 from helper_functions import get_client
 
 def invoke_deployment(endpoint_name: str, query: str, stream: bool = False):
     client = get_client()
-
-    import requests
 
     if stream:
         accept_header = "text/event-stream"
@@ -11,11 +10,10 @@ def invoke_deployment(endpoint_name: str, query: str, stream: bool = False):
         accept_header = "application/json"
 
     scoring_url = client.online_endpoints.get(endpoint_name).scoring_uri
-    primary_key = client.online_endpoints.get_keys(endpoint_name).primary_key
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {primary_key}",
+        "Authorization":  f"Bearer {client._credential.get_token('https://ml.azure.com').token}",
         "Accept": accept_header
     }
 
@@ -27,7 +25,7 @@ def invoke_deployment(endpoint_name: str, query: str, stream: bool = False):
             "stream": stream,
         },
     )
-    
+
     if stream:
         for item in response.iter_lines(chunk_size=None):
             print(item)

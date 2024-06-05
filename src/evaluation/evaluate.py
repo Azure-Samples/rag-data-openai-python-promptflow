@@ -1,12 +1,10 @@
 
 import json
 import pathlib
-
-# set environment variables before importing any other code
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
-import os
 import pandas as pd
 from pprint import pprint
 
@@ -31,12 +29,12 @@ def copilot_wrapper(*, chat_input, **kwargs):
     }
     return parsedResult
 
-def run_evaluation(name, dataset_path):
+def run_evaluation(eval_name, dataset_path):
 
     model_config = AzureOpenAIModelConfiguration(
-        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-        azure_deployment=os.environ.get("AZURE_OPENAI_EVALUATION_DEPLOYMENT"),
+        azure_deployment=os.getenv("AZURE_OPENAI_EVALUATION_DEPLOYMENT"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
     )
 
     # Initializing Evaluators
@@ -49,7 +47,7 @@ def run_evaluation(name, dataset_path):
 
     result = evaluate(
         target=copilot_wrapper,
-        evaluation_name=name,
+        evaluation_name=eval_name,
         data=data_path,
         evaluators={
             "relevance": relevance_eval,
@@ -62,15 +60,15 @@ def run_evaluation(name, dataset_path):
         },
         # to log evaluation to the cloud AI Studio project
         azure_ai_project = {
-            "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],
-            "resource_group_name": os.environ["AZURE_RESOURCE_GROUP"],
-            "project_name": os.environ["AZUREAI_PROJECT_NAME"]
+            "subscription_id": os.getenv("AZURE_SUBSCRIPTION_ID"),
+            "resource_group_name": os.getenv("AZURE_RESOURCE_GROUP"),
+            "project_name": os.getenv("AZUREAI_PROJECT_NAME")
         }
     )
-    
-    tabular_result = pd.DataFrame(result.get("rows"))
-    tabular_result.to_json(output_path, orient="records", lines=True) 
 
+    tabular_result = pd.DataFrame(result.get("rows"))
+    tabular_result.to_json(output_path, orient="records", lines=True)
+    
     return result, tabular_result
 
 if __name__ == "__main__":

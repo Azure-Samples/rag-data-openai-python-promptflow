@@ -19,11 +19,12 @@ def deploy_flow(endpoint_name, deployment_name):
         endpoint = ManagedOnlineEndpoint(
             name=endpoint_name,
             properties={
-              "enforce_access_to_default_secret_stores": "enabled" # if you want secret injection support
-            }
+                "enforce_access_to_default_secret_stores": "enabled" # if you want secret injection support
+            },
+            auth_mode="aad_token" # using aad auth instead of key-based auth
         )
 
-    deployment = ManagedOnlineDeployment( # defaults to key auth_mode
+    deployment = ManagedOnlineDeployment(
         name=deployment_name,
         endpoint_name=endpoint_name,
         model=Model(
@@ -65,9 +66,7 @@ def deploy_flow(endpoint_name, deployment_name):
             # the following is enabled by secret injection
             # make sure your environment variables here match the environment variables your code depends on
             'AZURE_OPENAI_ENDPOINT': os.getenv('AZURE_OPENAI_ENDPOINT'),
-            'AZURE_OPENAI_API_KEY': os.getenv('AZURE_OPENAI_API_KEY'),
             'AZURE_SEARCH_ENDPOINT':  os.getenv('AZURE_SEARCH_ENDPOINT'),
-            'AZURE_SEARCH_KEY':  os.getenv('AZURE_SEARCH_KEY'),
             'AZURE_OPENAI_API_VERSION': os.getenv('AZURE_OPENAI_API_VERSION'),
             'AZURE_OPENAI_CHAT_DEPLOYMENT': os.getenv('AZURE_OPENAI_CHAT_DEPLOYMENT'),
             'AZURE_OPENAI_EVALUATION_DEPLOYMENT': os.getenv('AZURE_OPENAI_EVALUATION_DEPLOYMENT'),
