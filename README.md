@@ -137,6 +137,8 @@ python -m indexing.build_index --index-name <desired_index_name>
 
 Add the argument `--path-to-data` if you want to use different data than what is provided in the data directory of this sample.
 
+You can view and use the index you just created on the **Indexes** page of your Azure AI Studio project.
+
 ### Step 4b: Set the index reference
 
 **Once you have the index you want to use, add the below entry to your .env file.** Note that the copilot code relies on this environment variable.

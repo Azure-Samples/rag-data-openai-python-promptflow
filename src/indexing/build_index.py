@@ -43,15 +43,10 @@ def build_aisearch_index(index_name, path_to_data):
       tokens_per_chunk = 800, # Optional field - Maximum number of tokens per chunk
       token_overlap_across_chunks = 0, # Optional field - Number of tokens to overlap between chunks
   )
+  print(f"Local Path: {index_path}")
 
   # register the index so that it shows up in the cloud project
   client.indexes.create_or_update(Index(name=index_name, path=index_path))
-
-  print(f"Local Path: {index_path}")
-
-  ml_index=client.indexes.get(name=index_name, label="latest")
-
-  print(f"Cloud Path: {ml_index.path}")
 
 if __name__ == "__main__":
   import argparse
@@ -65,6 +60,6 @@ if __name__ == "__main__":
   if not index_name:
     index_name = "product-info-index"
   if not path_to_data:
-    path_to_data = "./indexing/data/product-info"
+    path_to_data = "./indexing/data/product-info/"
   
   build_aisearch_index(index_name, path_to_data)
