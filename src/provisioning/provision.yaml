@@ -1,16 +1,16 @@
 ai:
   # you must specify an existing subscription
-  subscription_id: "55d03111-a247-4b98-b065-b7c9d182bbc1"
+  subscription_id: "<my_subscription_id>"
   # you can specify an existing resource group or specify the name for one to be created for you
-  resource_group_name: "EastProject"
+  resource_group_name: "<my_resource_group_name>"
   # you must specify what region to use for your ai services.
   # We recommend using the check_quota script provided before picking a region, or looking at model availability: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#standard-deployment-model-availability
-  location: "East US" # e.g. swedencentral
+  location: "<my_location>" # e.g. swedencentral
 
   # reference existing AI Hub+Project resources, or specify the name you want for new resources.
   # If you specify an existing hub but a non-existing project, a new project in that hub will be created for you.
-  hub_name: "rachitshivhare221089_ai"
-  project_name: "rachitshivhare221089-2288"
+  hub_name: "<my_ai_hub_name>"
+  project_name: "<my_ai_project_name>"
 
 aoai:
   # use references to an existing AOAI resource to connect it to your hub
@@ -24,11 +24,11 @@ aoai:
 
   # you can find the resource name and connection name under project Settings -> Connected resources.
   # alternatively, the name is the first part of the endpoint, after the protocol.
-  aoai_resource_name: "EastProject"
+  aoai_resource_name: "<my_aoai_resource_name>"
   kind: "OpenAI" # use OpenAI for AIServices
 
   # specify the name of the existing/creating hub connection for this resource
-  connection_name: "d39052db-a270-40a1-8235-0e5f2a582fea"
+  connection_name: "<my_aoai_connection_name>"
   
   # specify existing deployments or specify new deployments to be created
   # you can find the deployment details on the Deployments page of your project in Azure AI Studio
@@ -56,9 +56,9 @@ search:
   
   # you can find the resource name and connection name under project Settings -> Connected resources.
   # alternatively, the name is the first part of the endpoint, after the protocol.
-  search_resource_name: "EastProject"
+  search_resource_name: "<my_search_resource_name>"
   # specify the name of the existing/creating hub connection for this resource.
-  connection_name: rachitshivhare221089_ai # this needs to match with name used for env vars below
+  connection_name: <my_search_connection_name> # this needs to match with name used for env vars below
 
 environment:
   # below will be used for --export-env argument
