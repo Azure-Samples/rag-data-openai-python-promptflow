@@ -12,11 +12,7 @@ from pprint import pprint
 
 from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.evals.evaluate import evaluate
-from promptflow.evals.evaluators import RelevanceEvaluator, FluencyEvaluator, GroundednessEvaluator, CoherenceEvaluator
-
-#custom metrics
-from custom_evaluators import FriendlinessEvaluator, CompletenessEvaluator
-
+from promptflow.evals.evaluators import RelevanceEvaluator, GroundednessEvaluator, CoherenceEvaluator, ContentSafetyEvaluator
 
 # Define helper methods
 def load_jsonl(path):
@@ -34,22 +30,15 @@ def copilot_qna(*, chat_input, **kwargs):
     return parsedResult
 
 def run_evaluation(name, dataset_path):
-
-    model_config = AzureOpenAIModelConfiguration(
-        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-        azure_deployment=os.environ.get("AZURE_OPENAI_EVALUATION_DEPLOYMENT"),
-    )
+    project_scope = {
+        "subscription_id": os.environ.get("AZURE_SUBSCRIPTION_ID"),
+        "resource_group_name": os.environ.get("AZURE_RESOURCE_GROUP"),
+        "project_name": os.environ.get("AZUREAI_PROJECT_NAME")
+    }
+   
+    content_safety_eval = ContentSafetyEvaluator(project_scope=project_scope)
 
     # Initializing Evaluators
-    groundedness_eval = GroundednessEvaluator(model_config)
-    relevance_eval = RelevanceEvaluator(model_config)
-    fluency_eval = FluencyEvaluator(model_config)
-    coherence_eval = CoherenceEvaluator(model_config)
-
-    #custom eval
-    friendliness_eval = FriendlinessEvaluator()
-    #completeness_eval = CompletenessEvaluator(model_config)
     
     # Evaluate the default vs the improved system prompt to see if the improved prompt
     # performs consistently better across a larger set of inputs
@@ -62,20 +51,10 @@ def run_evaluation(name, dataset_path):
         evaluation_name=name,
         data=path,
         evaluators={
-            "groundedness": groundedness_eval,
-            "relevance": relevance_eval,
-            "fluency": fluency_eval,
-            "coherence": coherence_eval,
-            "friendliness":friendliness_eval,
-            #"completeness": completeness_eval
-
+            "content_safety": content_safety_eval
         },
         evaluator_config={
-            "relevance": {"question": "${data.chat_input}"},
-            "fluency": {"question": "${data.chat_input}"},
-            "coherence": {"question": "${data.chat_input}"},
-            "friendliness": {"response": "${target.answer}"},
-            #"completeness": {"question": "${data.chat_input}"}
+            "content_safety": {"question": "${data.chat_input}"}
         },
         output_path=output_path  # not supported yet, this is a noop, see line 71
     )
@@ -94,7 +73,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     evaluation_name = args.evaluation_name if args.evaluation_name else "test-sdk-copilot"
-    dataset_path = args.dataset_path if args.dataset_path else "./evaluation/evaluation_dataset_small.jsonl"
+    dataset_path = args.dataset_path if args.dataset_path else "./evaluation/evaluation_adversarial_nojailbrea.jsonl"
 
     result, tabular_result = run_evaluation(name=evaluation_name,
                               dataset_path=dataset_path)
