@@ -1,3 +1,4 @@
+msrest>=0.7.1 
 openai
 azure-identity==1.16.0
 azure-search-documents==11.4.0
@@ -10,18 +11,12 @@ promptflow-evals==0.3.0
 jinja2
 aiohttp
 python-dotenv
-
-# The following dependencies are required for provisioning
-
-# openai SDK
-openai==1.13.3
-
 # azure dependencies
 azure-core==1.30.1
 azure-mgmt-resource==23.0.1
 azure-mgmt-search==9.1.0
 azure-mgmt-cognitiveservices==13.5.0
-
+ 
 # utilities
 omegaconf-argparse==1.0.1
 omegaconf==2.3.0
