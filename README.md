@@ -181,7 +181,12 @@ pf flow test --flow ./copilot_flow --inputs ./copilot_flow/input_with_chat_histo
 
 Evaluation is a key part of developing a copilot application. Once you have validated your logic on a sample set of inputs, its time to test it on a larger set of inputs.
 
-Evaluation relies on an evaluation dataset. In this case, we have an evaluation dataset with chat_input and truth, and then a target function that adds the LLM response and context to the evaluation dataset before running the evaluations.
+Evaluation relies on an evaluation dataset. In this case, we have an evaluation dataset with chat_input, and then a target function that adds the LLM response and context to the evaluation dataset before running the evaluations.
+
+Running evaluation logs traces to cloud. Make sure you have logged in Azure CLI (az login, refer to Azure CLI doc for more informations) before execute below CLI command:
+``` bash
+pf config set trace.destination=azureml://subscriptions/<subscription-id>/resourcegroups/<resource-group-name>/providers/Microsoft.MachineLearningServices/workspaces/<project-name>
+```
 
 The following script streamlines the evaluation process. Update the evaluation code to set your desired evaluation metrics, or optionally evaluate on custom metrics. You can also change where the evaluation results get written to.
 
