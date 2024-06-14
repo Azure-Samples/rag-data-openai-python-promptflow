@@ -55,7 +55,6 @@ zipp==3.19.2
 numpy==1.26.4
 python-magic==0.4.27
 fsspec==2023.10.0
-setuptools==unknown
 filelock==3.15.1
 itsdangerous==2.2.0
 docutils==0.21.2
