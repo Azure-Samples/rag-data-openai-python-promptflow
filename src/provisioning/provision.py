@@ -6,12 +6,11 @@ import sys
 import re
 import argparse
 from pydantic import BaseModel, field_validator
-from omegaconf import OmegaConf
 from collections import OrderedDict
 import requests
 import traceback
 import uuid
-
+import argparse
 # from azure.ai.ml.entities import Project, Hub
 from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
@@ -747,6 +746,7 @@ def build_environment(environment_config, ai_project, env_file_path):
     # load dotenv vars as a dictionary
     from dotenv import dotenv_values
 
+
     dotenv_vars = dotenv_values(
         dotenv_path=env_file_path,
         verbose=False,
@@ -820,7 +820,16 @@ def main():
     logging.getLogger("azure.identity").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-    yaml_spec = OmegaConf.load(args.yaml_spec)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--yaml-spec",
+        help="point to a provision.yaml spec file",
+        type=str,
+        default=os.path.join(os.path.dirname(__file__), "provision.yaml"),
+    )
+    args = parser.parse_args()
+
+    yaml_spec = args.yaml_spec
     provision_plan = build_provision_plan(yaml_spec)
 
     # save ai_project for commodity
