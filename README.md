@@ -66,7 +66,7 @@ The script will check whether the resources you specified exist, otherwise it wi
 
 Our goal is to ground the LLM in our custom data (located in src > indexing > data > product-info). To do this, we will use promptflow to create a search index based on the specified product data.
 
-### Step 4a: Create a new index
+### Step 3a: Create a new index
 
 The following is a script to streamline index creation. It build the search index locally, and publishes it to your AI Studio project in the cloud.
 
@@ -76,7 +76,7 @@ python -m indexing.build_index --index-name <desired_index_name> --path-to-data=
 
 You can view and use the index you just created on the **Indexes** page of your Azure AI Studio project.
 
-### Step 4b: Set the index reference
+### Step 3b: Set the index reference
 
 NOTE: **Once you have the index you want to use, add the below entry to your .env file.** Note that the copilot code relies on this environment variable.
 
@@ -85,7 +85,7 @@ AZUREAI_SEARCH_INDEX_NAME=<index-name>
 ```
 
 
-## Step 6: Use prompt flow to test copilot code
+## Step 4: Use prompt flow to test copilot code
 
 This sample includes custom code to add retrieval augmented generation (RAG) capabilities to a basic chat application.
 
@@ -109,7 +109,7 @@ You can use the `--ui` flag to test interactively with a sample chat experience.
 
 
 
-## Step 7: Evaluate copilot performance
+## Step 5: Evaluate copilot performance
 
 Evaluation is a key part of developing a copilot application. Once you have validated your logic on a sample set of inputs, its time to test it on a larger set of inputs.
 
@@ -148,7 +148,7 @@ We recommend viewing your evaluation results in the Azure AI Studio, to compare 
 
 If you do not want to log evaluation results to your AI Studio project, you can modify the _evaluation.py_ script to not pass the azure_ai_project parameter.
 
-## Step 8: Deploy application to AI Studio
+## Step 6: Deploy application to AI Studio
 
 Use the deployment script to deploy your application to Azure AI Studio. This will deploy your app to a managed endpoint in Azure, that you can test, integrate into a front end application, or share with others.
 
@@ -166,7 +166,7 @@ If you get a quota error for the VM size during deployment, you can check VM ava
 
 Once you create an endpoint, you can re-deploy or update an existing deployment on that same endpoint.
 
-## Step 9: Verify your deployment
+## Step 7: Verify your deployment
 
 We recommend you test your application in the Azure AI Studio. The previous step outputted a handy link to your deployment. If you don't use the link, simply navigate to the Deployments tab in your project, and select your new deployment.
 
