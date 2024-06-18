@@ -7,7 +7,7 @@ Following the below steps, you will: set up your development environment, create
 > [!IMPORTANT]
 > We do not guarantee the quality of responses produced by these samples or their suitability for use in your scenarios, and responses will vary as development of the samples is ongoing. You must perform your own validation the outputs of the application and its suitability for use within your company.
 
-## Step 1: Set up your development environment
+## Step 1: Set up your development environment 
 
 ### Option 1: Explore sample with Codespaces
 
@@ -30,7 +30,7 @@ If you intend to develop your own code following this sample, we recommend you u
 #### Environment set up steps
 1. Create a new Python virtual environment to safely install the SDK packages:
 
-- On MacOS and Linux run:
+- On MacOS and Linux run: (you only need this for your workshop, given you are using Codespaces as instructed [here](https://microsoft-my.sharepoint.com/:w:/p/mesameki/Ed5UKepTDSpCpUCwigrxFrsBKMBZrEugqhSrosnz8jtdZQ?e=cudeiv))
 
    ``` bash
    python3 -m venv .venv
@@ -66,35 +66,13 @@ If you intend to develop your own code following this sample, we recommend you u
 3. If you haven't already done so, run `az login` to authenticate to Azure in your terminal.
     - Note: if you are running from within a Codespace or the curated VS Code cloud container, you will need to use `az login --use-device-code`
 
-## Step 2: Provision or reference Azure AI resources
-
-Use the provision script to provision new or reference existing Azure AI resources to use in your application.
-
-We have a process to help you easily provision the resources you need to run this sample. You can either create new resources, or specify existing resources.
-
-You can find the details you need for existing resources in the top-right project picker of the Azure AI Studio in the project view.
-
-> [!NOTE]
-> If you are viewing this README from within the curated VS Code cloud environment, there is a config.json file in your project directory that will have your subscription, region and project details that you can bring to the provision.yaml file.
-
-1. **Check your quota** for model deployments
-
-    To ensure you have quota to provision the model deployments you want, you can either check the Quota page in the Azure AI Studio, or the Quotas page at [oai.azure.com](https://oai.azure.com/), for a given region.
-
-    You can also try running our experimental script to check quota in your subscription. You can modify it to fit your requirements.
-
-    > [!NOTE]
-    > This script is intended to help understand quota, but it might provide numbers that are not accurate. The Azure AI Studio or the [Azure OpenAI portal](https://oai.azure.com/), and our [docs of quota limits](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits) would be the source of truth.
-
-    ```bash
-    python provisioning/check_quota.py --subscription-id <your-subscription-id>
-    ```
+## Step 2: Reference Azure AI resources
+Based on the instructions [here](https://microsoft-my.sharepoint.com/:w:/p/mesameki/Ed5UKepTDSpCpUCwigrxFrsBKMBZrEugqhSrosnz8jtdZQ?e=cudeiv), you already have everything you need. Navigate to your hub and project, click on "Settings" from the left menu, scroll down to "Connected Resource" and click on "View all". We need the information here to fill our yaml file below. Then follow these instructions:
 
 1. **Open the *provision.yaml* file** that is located in the `provisioning` directory
-    1. There are notes in the file to help you.
+    1. There are notes in the file to help you. 
 1. **Input all your desired fields**
     1. Note that you can either specify existing resources, or your desired names for new resources. If you are specifying existing resources, you can find the details you need in the Azure AI Studio project view.
-    1. Make sure you select a location and deployments you have quota for.
 1. **Run the *provision.py* script**
     1. If you want to see the provisioning plan (what *would* be provisioned given your `provision.yaml` specifications, without actually provisioning anything), run the below script with the `--show-only` flag.
     1. This script will output a .env in your src/ directory with all of your specified resources, which will be referenced by the rest of the sample code.
