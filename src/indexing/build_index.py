@@ -14,18 +14,7 @@ from helper_functions import get_client
 def build_aisearch_index(index_name, path_to_data):
 
   client = get_client()
-  print(
-    dict(        
-        model_name=os.environ['AZURE_OPENAI_EMBEDDING_DEPLOYMENT'],
-        deployment_name=os.environ['AZURE_OPENAI_EMBEDDING_DEPLOYMENT'],
-        connection_config=dict(
-          subscription_id=client.subscription_id,
-          resource_group_name=client.resource_group_name,
-          workspace_name=client.workspace_name,
-          connection_name=os.environ['AZURE_OPENAI_CONNECTION_NAME']
-        )
-    )
-  )
+
   # Use the same index name when registering the index in AI Studio
   index_path = build_index(
       name=index_name,  # name of your index
