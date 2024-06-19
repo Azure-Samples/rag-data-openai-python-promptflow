@@ -209,7 +209,7 @@ azure-ai-formrecognizer==3.3.3
 azure-storage-file-share==12.10.1
 msrestazure==0.6.4
 unstructured==0.14.5
-azure-identity==1.16.0
+azure-identity==1.16.1
 opencensus-ext-logging==0.1.1
 langchain-community==0.0.33
 langchain-text-splitters==0.0.2
