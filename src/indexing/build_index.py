@@ -51,8 +51,8 @@ def build_aisearch_index(index_name, path_to_data):
           )
       ),
       embeddings_cache_path="./indexing",
-      tokens_per_chunk = 5096, # Optional field - Maximum number of tokens per chunk
-      token_overlap_across_chunks = 1024, # Optional field - Number of tokens to overlap between chunks
+      tokens_per_chunk = 800, # Optional field - Maximum number of tokens per chunk
+      token_overlap_across_chunks = 0, # Optional field - Number of tokens to overlap between chunks
   )
   print(f"Local Path: {index_path}")
 
