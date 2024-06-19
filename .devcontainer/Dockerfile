@@ -11,5 +11,5 @@ ENV LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 RUN apt update && apt install -y fuse
 
 # Install Python SDK
-COPY src/requirements.txt .
-RUN pip install -r requirements.txt 
+COPY src/requirements.freeze.txt .
+RUN pip install -r requirements.freeze.txt 
