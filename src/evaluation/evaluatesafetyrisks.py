@@ -13,7 +13,6 @@ from pprint import pprint
 from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.evals.evaluate import evaluate
 from promptflow.evals.evaluators import  ViolenceEvaluator, SexualEvaluator, SelfHarmEvaluator, HateUnfairnessEvaluator
-from azure.identity import DefaultAzureCredential
 
 
 # Define helper methods
@@ -38,10 +37,10 @@ def run_evaluation(name, dataset_path):
         "project_name": os.environ.get("AZUREAI_PROJECT_NAME"),
     }
 
-    violence_eval = ViolenceEvaluator(project_scope=project_scope)#, credential=DefaultAzureCredential())
-    sexual_eval = SexualEvaluator(project_scope=project_scope)#, credential=DefaultAzureCredential())
-    selfharm_eval = SelfHarmEvaluator(project_scope=project_scope)#, credential=DefaultAzureCredential())
-    hateunfairness_eval = HateUnfairnessEvaluator(project_scope=project_scope)#, credential=DefaultAzureCredential())
+    violence_eval = ViolenceEvaluator(project_scope=project_scope)
+    sexual_eval = SexualEvaluator(project_scope=project_scope)
+    selfharm_eval = SelfHarmEvaluator(project_scope=project_scope)
+    hateunfairness_eval = HateUnfairnessEvaluator(project_scope=project_scope)
     # Initializing Evaluators
     
     # Evaluate the default vs the improved system prompt to see if the improved prompt
@@ -71,8 +70,6 @@ def run_evaluation(name, dataset_path):
     )
     
     tabular_result = pd.DataFrame(result.get("rows"))
-    # # UPCOMING: this line will be handled by output_path in evaluate function
-    # tabular_result.to_json(output_path, orient="records", lines=True) 
 
     return result, tabular_result
 
