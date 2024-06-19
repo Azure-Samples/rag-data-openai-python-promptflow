@@ -7,147 +7,85 @@ Following the below steps, you will: set up your development environment, create
 > [!IMPORTANT]
 > We do not guarantee the quality of responses produced by these samples or their suitability for use in your scenarios, and responses will vary as development of the samples is ongoing. You must perform your own validation the outputs of the application and its suitability for use within your company.
 
-## Step 1: Set up your development environment
-
-### Option 1: Explore sample with Codespaces
-
-- To get started quickly with this sample, you can use a pre-built Codespaces development environment. **Click the button below** to open this repo in GitHub Codespaces, and then continue the readme!
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/rag-data-openai-python-promptflow?quickstart=1)
-
-- Once you've launched Codespaces you can proceed to step 2.
-
-### Option 2: Develop in your own environment
-
-#### Develop in a curated cloud environment
-If you intend to develop your own code following this sample, we recommend you use the **Azure AI curated VS Code development environment**.
-
-- You can get started with this cloud environment from the Azure AI Studio by following these steps: [Work with Azure AI projects in VS Code](https://learn.microsoft.com/azure/ai-studio/how-to/develop-in-vscode)
-- Once you are set up, follow the steps below. This is a Linux environment.
-
-#### Develop locally
-- If you prefer to develop locally, simply follow the steps below
-
-#### Environment set up steps
-1. Create a new Python virtual environment to safely install the SDK packages:
-
-- On MacOS and Linux run:
-
-   ``` bash
-   python3 -m venv .venv
-   ```
-
-   ``` bash
-   source .venv/bin/activate
-   ```
-
-- On Windows run:
-
-   ``` bash
-   py -3 -m venv .venv
-   ```
-
-   ``` bash
-   .venv\scripts\activate
-   ```
-
-2. Now that your virtual environment is activated, install the SDK packages
-    - First, navigate to the src directory. This is where you will do the majority of your work.
-
-    ```bash
-    cd src
-    ```
-
-    - Next, install the requirements in your venv. Note: this may take several minutes the first time you install.
-
-    ``` bash
-    pip install -r requirements.txt
-    ```
-
-3. If you haven't already done so, run `az login` to authenticate to Azure in your terminal.
+## Step 1: Az login
+If you haven't already done so, run `az login` to authenticate to Azure in your terminal.
     - Note: if you are running from within a Codespace or the curated VS Code cloud container, you will need to use `az login --use-device-code`
 
-## Step 2: Provision or reference Azure AI resources
 
-Use the provision script to provision new or reference existing Azure AI resources to use in your application.
+## Step 2: Reference Azure AI resources
+Based on the instructions [here](https://microsoft-my.sharepoint.com/:w:/p/mesameki/Ed5UKepTDSpCpUCwigrxFrsBKMBZrEugqhSrosnz8jtdZQ?e=cudeiv), you already have everything you need. Navigate to your hub and project, click on "Settings" from the left menu, scroll down to "Connected Resource" and click on "View all". We need the information here to fill some of the details of our yaml file below. Open your ./provisioning/provision.yaml file and let's fill it together step by step:
 
-We have a process to help you easily provision the resources you need to run this sample. You can either create new resources, or specify existing resources.
+### For the section under "ai":
 
-You can find the details you need for existing resources in the top-right project picker of the Azure AI Studio in the project view.
+Under your AI Studio project's "Settings" tab, there is a section called "Project properties". Copy paste all the info you need from there into this part of the yaml file. Note that:
+- "hub_name": copy paste what you see under "hub resource name" in the UI 
+- "project_name"= The string under field "Name" in the UI
 
-> [!NOTE]
-> If you are viewing this README from within the curated VS Code cloud environment, there is a config.json file in your project directory that will have your subscription, region and project details that you can bring to the provision.yaml file.
+### For the section under "aoai":
+Click on "Settings" from the left menu of Azure AI Studio, scroll down to "Connected Resource" and click on "View all". Click on the table row whose type is "Azure OpenAI". Once opened:
 
-1. **Check your quota** for model deployments
+- aoai_resource_name: What comes under "Resource" in your table
+- kind: "OpenAI" (keep it as is)
+- connection_name: Title of the page (written above "Connection Details")
+### For the section under "deployments":
 
-    To ensure you have quota to provision the model deployments you want, you can either check the Quota page in the Azure AI Studio, or the Quotas page at [oai.azure.com](https://oai.azure.com/), for a given region.
+Click on the "Deployments" tab from the left menu of Azure AI Studio. If you followed all the steps in the workshop guide doc, you already have two deployments here. One embedding model and one GPT model. Insert information from that table here (the table has column headers name, model name, and version. Exactly what you will use here):
 
-    You can also try running our experimental script to check quota in your subscription. You can modify it to fit your requirements.
+- name: from your Deployments table, copy what is under "name". Example: "gpt-4" 
 
-    > [!NOTE]
-    > This script is intended to help understand quota, but it might provide numbers that are not accurate. The Azure AI Studio or the [Azure OpenAI portal](https://oai.azure.com/), and our [docs of quota limits](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits) would be the source of truth.
+  model: from your Deployments table, copy what is under "model name". Example: "gpt-4"
+
+  version: from your Deployments table, copy what is under "Model version". Example: 1106.
+  
+  Repeat this for your embedding model:
+
+- name: from your Deployments table, copy what is under "name"/ Example: "text-embedding-ada-002"
+  
+  model: from your Deployments table, copy what is under "model name". Example: "gpt-4""text-embedding-ada-002"
+
+  version: from your Deployments table, copy what is under "Model version". Example: "2" # if you don't know, comment this line and we'll pick default
+### For the section under "search":
+Click on "Settings" from the left menu of Azure AI Studio, scroll down to "Connected Resource" and click on "View all". Click on the table row whose type is "Azure AI Search (Cognitive Search)". Once opened:
+
+- search_resource_name: What comes under "Resource" in your table
+- connection_name: Title of the page (written above "Connection Details")
+
+
+Once you set up those parameters, run:
 
     ```bash
-    python provisioning/check_quota.py --subscription-id <your-subscription-id>
-    ```
-
-1. **Open the *provision.yaml* file** that is located in the `provisioning` directory
-    1. There are notes in the file to help you.
-1. **Input all your desired fields**
-    1. Note that you can either specify existing resources, or your desired names for new resources. If you are specifying existing resources, you can find the details you need in the Azure AI Studio project view.
-    1. Make sure you select a location and deployments you have quota for.
-1. **Run the *provision.py* script**
-    1. If you want to see the provisioning plan (what *would* be provisioned given your `provision.yaml` specifications, without actually provisioning anything), run the below script with the `--show-only` flag.
-    1. This script will output a .env in your src/ directory with all of your specified resources, which will be referenced by the rest of the sample code.
-
-    ``` bash
     # Note: make sure you run this command from the src/ directory so that your .env is written to the correct location (src/)
+    cd src
     python provisioning/provision.py --export-env .env
+
     ```
 
-    The script will check whether the resources you specified exist, otherwise it will create them. It will then construct a .env for you that references the provisioned or referenced resources, including your keys. Once the provisioning is complete, you'll be ready to move to step 3.
+The script will check whether the resources you specified exist, otherwise it will create them. It will then construct a .env for you that references the provisioned or referenced resources, including your keys. Once the provisioning is complete, you'll be ready to move to step 3.
 
-## Step 3: Explore prompts
+## Step 3: Create an index
 
-This sample repository contains a sample chat prompty file you can explore. This will let you verify your environment is set up to call your model deployments.
+Our goal is to ground the LLM in our custom data (located in src > indexing > data > product-info). To do this, we will use promptflow to create a search index based on the specified product data.
 
-This pattern was covered in the [hello world prompting sample](https://github.com/Azure-Samples/ai-studio-hello-world), showing how the Prompty file format let's you streamline your LLM calls.
-
-You can test your connection to your Azure Open AI model by running only the sample prompt. Try changing up the specified system prompt to see how the model behaves with additional prompting.
-
-``` bash
-cd ..
-pf flow test --flow ./sample_flow --inputs query="why is the sky blue?"
-```
-
-Because we have more complex model orchestration logic for our RAG application, in the next steps, we will integrate our custom logic with Prompty to retrieve relevant documents and then query the LLM with additional context.
-
-## Step 4: Create an index
-
-Our goal is to ground the LLM in our custom data. To do this, we will use promptflow to create a search index based on the specified product data.
-
-If you already have an index you'd like to use, skip to Step 4b.
-
-### Step 4a: Create a new index
+### Step 3a: Create a new index
 
 The following is a script to streamline index creation. It build the search index locally, and publishes it to your AI Studio project in the cloud.
 
 ``` bash
-python -m indexing.build_index --index-name <desired_index_name>
+python -m indexing.build_index --index-name <desired_index_name> --path-to-data=indexing/data/product-info
 ```
-
-Add the argument `--path-to-data` if you want to use different data than what is provided in the data directory of this sample.
 
 You can view and use the index you just created on the **Indexes** page of your Azure AI Studio project.
 
-### Step 4b: Set the index reference
+### Step 3b: Set the index reference
 
-**Once you have the index you want to use, add the below entry to your .env file.** Note that the copilot code relies on this environment variable.
+NOTE: **Once you have the index you want to use, add the below entry to your .env file.** Note that the copilot code relies on this environment variable.
 
 ``` text
 AZUREAI_SEARCH_INDEX_NAME=<index-name>
 ```
 
-## Step 5: Develop custom code
+
+## Step 4: Use prompt flow to test copilot code
 
 This sample includes custom code to add retrieval augmented generation (RAG) capabilities to a basic chat application.
 
@@ -161,8 +99,6 @@ The code implements the following general logic:
 
 You can modify this logic as appropriate to fit your use case.
 
-## Step 6: Use prompt flow to test copilot code
-
 Use prompt flow's testing capability to validate how your copilot performs as expected on sample inputs.
 
 ``` bash
@@ -171,13 +107,9 @@ pf flow test --flow ./copilot_flow --inputs chat_input="how much do the Trailwal
 
 You can use the `--ui` flag to test interactively with a sample chat experience. Prompt flow locally serves a front end integrated with your code.
 
-If you want to test with chat_history, you can use or update the sample input json file, and test like below:
 
-```bash
-pf flow test --flow ./copilot_flow --inputs ./copilot_flow/input_with_chat_history.json
-```
 
-## Step 7: Evaluate copilot performance
+## Step 5: Evaluate copilot performance
 
 Evaluation is a key part of developing a copilot application. Once you have validated your logic on a sample set of inputs, its time to test it on a larger set of inputs.
 
@@ -187,7 +119,6 @@ Running evaluation logs traces to cloud. Make sure you have logged in Azure CLI 
 ``` bash
 pf config set trace.destination=azureml://subscriptions/<subscription-id>/resourcegroups/<resource-group-name>/providers/Microsoft.MachineLearningServices/workspaces/<project-name>
 ```
-
 The following script streamlines the evaluation process. Update the evaluation code to set your desired evaluation metrics, or optionally evaluate on custom metrics. You can also change where the evaluation results get written to.
 
 ``` bash
@@ -198,16 +129,16 @@ This command generates evaluations on a much larger test set and generates some 
 ``` bash
 python -m evaluation.evaluate  --evaluation-name quality_evals_contoso_retail  --dataset-path=./evaluation/ContosoTestBuild.jsonl
 ```
-This command generates evaluations on a much bigger test set and generates a custom evaluator called "Completeness"
+This command generates one single custom evaluator called "Completeness" on a much larger test set.
 ``` bash
 python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset.jsonl --cot
 ```
-This commands generates evaluations on an adversarial dataset generated via our simulator (First run evaluation/simulate_and_evaluate_online_endpoints.py) and generates our four safety metrics. Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics).
+This commands generates evaluations on an adversarial dataset generated via our simulator. You can try the simulator by running evaluation/simulate_and_evaluate_online_endpoints.py. The command below uses the adversarial data to generate our four safety metrics. Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics).
 
 ``` bash
 python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail_jailbreak  --dataset-path=./evaluation/adversarial_questions_jailbreak.jsonl
 ```
-Specify the `--dataset-path` argument if you want to provide a different evaluation dataset.
+
 
 We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models. The _evaluate.py_ script is set up to log your evaluation results to your AI Studio project. 
 
@@ -217,7 +148,7 @@ We recommend viewing your evaluation results in the Azure AI Studio, to compare 
 
 If you do not want to log evaluation results to your AI Studio project, you can modify the _evaluation.py_ script to not pass the azure_ai_project parameter.
 
-## Step 8: Deploy application to AI Studio
+## Step 6: Deploy application to AI Studio
 
 Use the deployment script to deploy your application to Azure AI Studio. This will deploy your app to a managed endpoint in Azure, that you can test, integrate into a front end application, or share with others.
 
@@ -235,7 +166,7 @@ If you get a quota error for the VM size during deployment, you can check VM ava
 
 Once you create an endpoint, you can re-deploy or update an existing deployment on that same endpoint.
 
-## Step 9: Verify your deployment
+## Step 7: Verify your deployment
 
 We recommend you test your application in the Azure AI Studio. The previous step outputted a handy link to your deployment. If you don't use the link, simply navigate to the Deployments tab in your project, and select your new deployment.
 
