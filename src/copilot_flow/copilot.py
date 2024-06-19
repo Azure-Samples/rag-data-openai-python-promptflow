@@ -48,6 +48,7 @@ def get_chat_response(chat_input: str, chat_history: list = []) -> ChatResponse:
         searchQuery = intentPrompty(query=chat_input, chat_history=chat_history)
 
     # retrieve relevant documents and context given chat_history and current user query (chat_input)
+    print(os.environ["AZURE_OPENAI_API_KEY"])
     documents = get_documents(searchQuery, 3)
 
     # send query + document context to chat completion for a response
@@ -57,7 +58,7 @@ def get_chat_response(chat_input: str, chat_history: list = []) -> ChatResponse:
         'parameters': { 
             'max_tokens': 256,
             'temperature': 0.2,
-            'stream': True # always stream responses, consumers/clients should handle streamed response
+            'stream': False # always stream responses, consumers/clients should handle streamed response
         }
     })
     result = chatPrompty(

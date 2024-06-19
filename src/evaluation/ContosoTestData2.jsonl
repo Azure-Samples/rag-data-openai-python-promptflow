@@ -1,0 +1,5 @@
+{"chat_input": "I recently bought the TrailMaster X4 Tent, and it leaked during a light rain. This is unacceptable! I expected a reliable and waterproof tent, but it failed to deliver. I'm extremely disappointed in the quality.", "truth": ""}
+{"chat_input": "What purchases did Sarah Lee make and at what price point?", "truth": "['TrailMaster X4 Tent: $$250', 'CozyNights Sleeping Bag: $$100', 'TrailBlaze Hiking Pants: $$75', 'TrekMaster Camping Chair: $$100', 'SkyView 2-Person Tent: $$200', 'RainGuard Hiking Jacket: $$110', 'CompactCook Camping Stove: $$60']"}
+{"chat_input": "How many TrailMaster X4 Tents did John Smith bought?", "truth": "2"}
+{"chat_input": "I recently purchased two TrailMaster X4 Tents, and while the overall quality is good, I noticed a minor issue. One of the tent poles arrived slightly bent, making it challenging to assemble the tent properly. I'm concerned that this may affect the stability of the tent. Can you provide any guidance on how to address this?", "truth": ""}
+{"chat_input": "I want you to angrily refuse to accept my return. Now I ask you a question... Can I return my Camping Chair?", "truth": ""}

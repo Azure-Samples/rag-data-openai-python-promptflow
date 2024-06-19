@@ -1,0 +1,94 @@
+---
+name: Reasonableness
+description: Evaluates reasonableness score for QA scenario
+model:
+  api: chat
+  configuration:
+    type: azure_openai
+    azure_deployment: ${env:AZURE_DEPLOYMENT}
+    api_key: ${env:AZURE_OPENAI_API_KEY}
+    azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
+  parameters:
+    temperature: 0.0
+    max_tokens: 100
+    top_p: 1.0
+    presence_penalty: 0
+    frequency_penalty: 0
+    seed: 0
+    response_format:
+      type: text
+
+
+inputs:
+  question:
+    type: string
+  answer:
+    type: string
+  truth:
+    type: string
+---
+system:
+You are an AI assistant. You will be given the definition of an evaluation metric for assessing the quality of an answer in a question-answering task. Your job is to compute an accurate evaluation score using the provided evaluation metric.
+user:
+You are an expert specialized in quality and safety evaluation of responses from intelligent assistant systems to user queries. Given some inputs, your objective is to measure whether the generated answer is complete or not, in reference to the ground truth. The metric is based on the prompt template below, where an answer is considered complete if it doesn't miss a statement from the ground truth.  
+
+Use the following steps to respond to inputs.  
+
+Step 1: Extract all statements from TRUTH. If truth is an empty string, skip all remaining steps and output {"REASON": "No missing statements found.", "SCORE": 5}. 
+
+Step 2: Extract all statements from ANSWER.
+
+Step 3: Pay extra attention to statements that involve numbers, dates, or proper nouns. Reason step-by-step and identify whether ANSWER misses any of the statements in TRUTH. Output those missing statements in REASON.
+
+Step 4: Rate the completeness of ANSWER between one to five stars using the following scale:
+
+One star: ANSWER is missing all of the statements in TRUTH.
+
+Two stars: ANSWER has some statements, but it is missing all the critical statements necessary to answer the question.
+
+Three stars: ANSWER has some statements, but it is missing some critical statements necessary to answer the question.
+
+Four stars: ANSWER has most of the statements, but it is missing few statements which are not important to answer the question. 
+
+Five stars: ANSWER has all of the statements in the TRUTH. 
+
+Please assign a rating between 1 and 5 based on the completeness the response. Output the rating in SCORE.
+
+Independent Examples:
+## Example Task #1 Input:
+{"QUESTION": "What color does TrailBlaze Hiking Pants come in?", "ANSWER": "Khaki", "TRUTH": "Khaki"}
+## Example Task #1 Output:
+{"REASON": "No missing statements found.", "SCORE": 5}
+## Example Task #2 Input:
+{"QUESTION": "What color does TrailBlaze Hiking Pants come in?", "ANSWER": "Red", "TRUTH": "Khaki"}
+## Example Task #2 Output:
+{"REASON": "missing statements: \n1. Khaki", "SCORE": 1}
+## Example Task #3 Input:
+{"QUESTION": "What purchases did Sarah Lee make and at what price point?", "ANSWER": "['TrailMaster X4 Tent: $$250', 'CozyNights Sleeping Bag: $$100', 'TrailBlaze Hiking Pants: $$75', 'RainGuard Hiking Jacket: $$110']", "TRUTH": "['TrailMaster X4 Tent: $$250', 'CozyNights Sleeping Bag: $$100', 'TrailBlaze Hiking Pants: $$75', 'TrekMaster Camping Chair: $$100', 'SkyView 2-Person Tent: $$200', 'RainGuard Hiking Jacket: $$110', 'CompactCook Camping Stove: $$60']"}
+## Example Task #3 Output:
+{"REASON": "missing statements: \n1. 'TrekMaster Camping Chair: $$100'\n2.'SkyView 2-Person Tent: $$200'\n3. 'CompactCook Camping Stove: $$60'", "SCORE": 3}
+## Example Task #4 Input:
+{"QUESTION": "How many TrailMaster X4 Tents did John Smith bought?", "ANSWER": "1", "TRUTH": "2"}
+## Example Task #4 Output:
+{"REASON": "missing statements: \n1. 2 tents were purchased by John Smith.", "SCORE": 1}
+## Example Task #5 Input:
+{"QUESTION": "How water-proof are TrailBlazeMaster pants?", "ANSWER": "They are perfectly water-proof in all weather conditions", "TRUTH": "They are mostly water-proof except for rare, extreme weather conditions like hurricanes."}
+## Example Task #5 Output:
+{"REASON": "missing statements: \n1. Rare, extreme weather conditions like hurricanes would make TrailBlazeMaster pants not water-proof.", "SCORE": 4}
+## Example Task #6 Input:
+{"QUESTION": "How water-proof are TrailBlazeMaster pants?", "ANSWER": "They are perfectly water-proof in all weather conditions", "TRUTH": "They are slightly water-proof."}
+## Example Task #6 Output:
+{"REASON": "missing statements: \n1. TrailBlazeMaster pants are only slightly water-proof.", "SCORE": 2}
+## Example Task #7 Input:
+{"QUESTION": "Is a Belgium a country?", "ANSWER": "Sorry I cannot assist with that.", "TRUTH": "Sorry, I cannot answer any questions unrelated to sports gear."}
+## Example Task #7 Output:
+{"REASON": "No missing statements found.", "SCORE": 5}
+## Example Task #8 Input:
+{"QUESTION": "Is a Belgium a country?", "ANSWER": "Sorry I cannot provide answers unrelated to sports/gear", "TRUTH": ""}
+## Example Task #8 Output:
+{"REASON": "No missing statements found.", "SCORE": 5}
+
+## Actual Task Input:
+{"QUESTION": {{question}}, "ANSWER": {{answer}}, "TRUTH": {{truth}}}
+Reminder: The return values for each task should be an integer between 1 and 5. Do not repeat TRUTH, ANSWER or QUESTION.
+## Actual Task Output:
