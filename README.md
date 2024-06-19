@@ -14,6 +14,9 @@ Following the below steps, you will: set up your development environment, create
 - To get started quickly with this sample, you can use a pre-built Codespaces development environment. **Click the button below** to open this repo in GitHub Codespaces, and then continue the readme!
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/rag-data-openai-python-promptflow?quickstart=1)
 
+    > [!NOTE]
+    If your container in VS code failed to start and defaulted to safety mode, you need to fork the repo into your github domain first and use your fork as the target in the Codespaces url. 
+
 - Once you've launched Codespaces you can proceed to step 2.
 
 ### Option 2: Develop in your own environment
@@ -125,6 +128,14 @@ Because we have more complex model orchestration logic for our RAG application, 
 
 Our goal is to ground the LLM in our custom data. To do this, we will use promptflow to create a search index based on the specified product data.
 
+Because the step uses vector search with Azure OpenAI embeddings (e.g., ada-002) to encode your documents, you need to allow your Azure AI search resource to access your AI OpenAI resource in these roles:
+
+	- Cognitive Services OpenAI Contributor
+    - Cognitive Services Contributor
+    - (optionally if you need quota view) Cognitive Services Usages Reader
+ 
+Follow instruction on https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control to add role assignment.
+
 If you already have an index you'd like to use, skip to Step 4b.
 
 ### Step 4a: Create a new index
@@ -183,10 +194,14 @@ Evaluation is a key part of developing a copilot application. Once you have vali
 
 Evaluation relies on an evaluation dataset. In this case, we have an evaluation dataset with chat_input, and then a target function that adds the LLM response and context to the evaluation dataset before running the evaluations.
 
-Running evaluation logs traces to cloud. Make sure you have logged in Azure CLI (az login, refer to Azure CLI doc for more informations) before execute below CLI command:
+Optionally, if you want to log your code traces and evaluation results on AI studio, run the following command. Make sure you have logged in Azure CLI (az login, refer to Azure CLI doc for more informations) before execute below CLI command:
 ``` bash
 pf config set trace.destination=azureml://subscriptions/<subscription-id>/resourcegroups/<resource-group-name>/providers/Microsoft.MachineLearningServices/workspaces/<project-name>
 ```
+
+> [!NOTE]
+> This will configure your project with a Cosmos DB account for logging. It may take several minutes the first time you run an evaluation.
+
 
 The following script streamlines the evaluation process. Update the evaluation code to set your desired evaluation metrics, or optionally evaluate on custom metrics. You can also change where the evaluation results get written to.
 
@@ -202,18 +217,22 @@ This command generates evaluations on a much bigger test set and generates a cus
 ``` bash
 python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset.jsonl --cot
 ```
-This commands generates evaluations on an adversarial dataset generated via our simulator (First run evaluation/simulate_and_evaluate_online_endpoints.py) and generates our four safety metrics. Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics).
+To run safety evaluations, first run evaluation/simulate_and_evaluate_online_endpoints.ipynb with step-by-step explanations. The simulator calls will generate a baseline and a jailbreak dataset at the end, which will be saved to local `adv_qa_outputs.jsonl` and `adv_qa_jailbreak_outputs.jsonl`
+
+This command generates a safety evaluation on the baseline dataset on four safety metrics (self-harm, violence, sexual, hate and unfairness). Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics).
 
 ``` bash
-python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail_jailbreak  --dataset-path=./evaluation/adversarial_questions_jailbreak.jsonl
+python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail  --dataset-path=./evaluation/adv_qa_outputs.jsonl
 ```
 Specify the `--dataset-path` argument if you want to provide a different evaluation dataset.
 
-We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models. The _evaluate.py_ script is set up to log your evaluation results to your AI Studio project. 
+This command generates a safety evaluation on the jailbreak dataset on four safety metrics.
 
-> [!NOTE]
-> This will configure your project with a Cosmos DB account for logging. It may take several minutes the first time you run an evaluation.
+``` bash
+python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail_jailbreak  --dataset-path=./evaluation/adv_qa_jailbreak_outputs.jsonl
+```
 
+We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models. Compare the harmful content defect rates on the baseline and the jailbreak dataset, and the differences in the defect rates constitute the defect rates for jailbreaks. That is, how likely your copilot will be jailbroken to surface harmful content if malicious prompts are into your user queries. The _evaluate.py_ script is set up to log your evaluation results to your AI Studio project. 
 
 If you do not want to log evaluation results to your AI Studio project, you can modify the _evaluation.py_ script to not pass the azure_ai_project parameter.
 
@@ -223,7 +242,7 @@ Use the deployment script to deploy your application to Azure AI Studio. This wi
 
 You can make any changes to deployment specifications to fit your use case.
 > [!NOTE]
-> If you made any custom changes to your .env not covered in this README, make sure you reference them in the deploy.py script before you deploy so that they are available in the deployed environment.
+> If you made any custom changes to your .env not covered in this README, make sure you reference them in the deploy.py script before you deploy so that they are available in the deployed environment. You cannot deploy your app to an existing endpoint.  
 
 ``` bash
 python -m deployment.deploy --endpoint-name <endpoint_name> --deployment-name <deployment_name>

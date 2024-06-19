@@ -1,58 +1,60 @@
 ai:
   # you must specify an existing subscription
-  subscription_id: "<my_subscription_id>"
+  subscription_id: "6187b663-b744-4d24-8226-7e66525baf8f"
   # you can specify an existing resource group or specify the name for one to be created for you
-  resource_group_name: "<my_resource_group_name>"
+  resource_group_name: "cliu-naas-mg-rg"
   # you must specify what region to use for your ai services.
   # We recommend using the check_quota script provided before picking a region, or looking at model availability: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#standard-deployment-model-availability
-  location: "<my_location>" # e.g. swedencentral
+  location: "swedencentral"
 
   # reference existing AI Hub+Project resources, or specify the name you want for new resources.
   # If you specify an existing hub but a non-existing project, a new project in that hub will be created for you.
-  hub_name: "<my_ai_hub_name>"
-  project_name: "<my_ai_project_name>"
+  hub_name: "cliuaihubnaasmg"
+  project_name: "changliu2-0709"
+
 
 aoai:
   # use references to an existing AOAI resource to connect it to your hub
   # or else provision.py will create a resource with those references
-
-  # uncomment these only if sub/rg/region are different from AI Hub
-  # subscription_id: "<my_subscription_id>"
-  # resource_group_name: "<my_resource_group>"
+  
+  # specify these only if sub/rg/region are different from AI Hub
+  subscription_id: "1b365fe2-5882-4935-bd81-8027e0816b45"
+  resource_group_name: "fsi-km-api"
   # IMPORTANT: for assistant, region needs to be in [australiaeast, eastus, eastus2, francecentral, norwayeast, swedencentral, uksouth]
-  # location: <my_location>
+  location: "francecentral"
 
   # you can find the resource name and connection name under project Settings -> Connected resources.
   # alternatively, the name is the first part of the endpoint, after the protocol.
-  aoai_resource_name: "<my_aoai_resource_name>"
+  aoai_resource_name: "iaikmopenai4"
   kind: "OpenAI" # use OpenAI for AIServices
-
-  # specify the name of the existing/creating hub connection for this resource
-  connection_name: "<my_aoai_connection_name>"
   
+  # specify the name of the existing/creating connection for this resource
+  connection_name: "iaikmopenai4" # this needs to match with name used for env vars below
   # specify existing deployments or specify new deployments to be created
   # you can find the deployment details on the Deployments page of your project in Azure AI Studio
   deployments:
-    - name: "gpt-35-turbo"
-      model: "gpt-35-turbo"
-      version: "0301" # if you don't know, comment this line and we'll pick default
+    - name: "gpt4-0613"
+      model: "gpt-4"
+      version: "0613" # if you don't know, comment this line and we'll pick default
       # capacity: 30 # choose the capacity (in thousands of tokens per minute) if you are creating a new deployment - the default is 10 if unspecified. Some regions/locations or models may have quota limits.
-    - name: "text-embedding-ada-002"
+    - name: "text-embedding-ada-002-v2"
       model: "text-embedding-ada-002"
       version: "2" # if you don't know, comment this line and we'll pick default
 
 
+
 search:
-  # uncomment these only if sub/rg/region are different from AI Hub
-  # subscription_id: "<my_subscription_id>"
-  # resource_group_name: "<my_resource_group>"
-  # region: <my_region>
-  
+  # specify these only if sub/rg/region are different from AI Hub
+  # subscription_id: "6187b663-b744-4d24-8226-7e66525baf8f"
+  # resource_group_name: "cliu-naas-mg-rg"
+  # IMPORTANT: for assistant, region needs to be in [australiaeast, eastus, eastus2, francecentral, norwayeast, swedencentral, uksouth]
+  # location: "swedencentral"
+
   # you can find the resource name and connection name under project Settings -> Connected resources.
   # alternatively, the name is the first part of the endpoint, after the protocol.
-  search_resource_name: "<my_search_resource_name>"
+  search_resource_name: "cliuaisearch"
   # specify the name of the existing/creating hub connection for this resource.
-  connection_name: <my_search_connection_name> # this needs to match with name used for env vars below
+  connection_name: "AzureAISearch" # this needs to match with name used for env vars below
 
 environment:
   # below will be used for --export-env argument
@@ -65,7 +67,7 @@ environment:
     AZURE_SEARCH_ENDPOINT: "azureml://connections/${search.connection_name}/target"
     AZURE_SEARCH_KEY: "azureml://connections/${search.connection_name}/credentials/key"
     # these are constants used by this sample code - they can be modified for your use cases
-    AZURE_OPENAI_API_VERSION: "2023-03-15-preview"
+    AZURE_OPENAI_API_VERSION: "2023-05-15"
     AZURE_OPENAI_CHAT_DEPLOYMENT: "${aoai.deployments[0].name}"
     AZURE_OPENAI_EMBEDDING_DEPLOYMENT: "${aoai.deployments[1].name}"
     AZURE_OPENAI_EVALUATION_DEPLOYMENT: "${aoai.deployments[0].name}"
