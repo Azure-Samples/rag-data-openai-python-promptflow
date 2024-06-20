@@ -7,7 +7,6 @@ Following the below steps, you will: set up your development environment, create
 > [!IMPORTANT]
 > We do not guarantee the quality of responses produced by these samples or their suitability for use in your scenarios, and responses will vary as development of the samples is ongoing. You must perform your own validation the outputs of the application and its suitability for use within your company.
 
-
 ## Step 1: Az login
 If you haven't already done so, run `az login` to authenticate to Azure in your terminal.
     - Note: if you are running from within a Codespace or the curated VS Code cloud container, you will need to use `az login --use-device-code`
