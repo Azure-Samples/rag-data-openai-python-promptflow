@@ -14,6 +14,7 @@ from promptflow.core import AzureOpenAIModelConfiguration
 from promptflow.evals.evaluate import evaluate
 from promptflow.evals.evaluators import  ViolenceEvaluator, SexualEvaluator, SelfHarmEvaluator, HateUnfairnessEvaluator
 
+
 # Define helper methods
 def load_jsonl(path):
     with open(path, "r") as f:
@@ -33,9 +34,9 @@ def run_evaluation(name, dataset_path):
     project_scope = {
         "subscription_id": os.environ.get("AZURE_SUBSCRIPTION_ID"),
         "resource_group_name": os.environ.get("AZURE_RESOURCE_GROUP"),
-        "project_name": os.environ.get("AZUREAI_PROJECT_NAME")
+        "project_name": os.environ.get("AZUREAI_PROJECT_NAME"),
     }
-   
+
     violence_eval = ViolenceEvaluator(project_scope=project_scope)
     sexual_eval = SexualEvaluator(project_scope=project_scope)
     selfharm_eval = SelfHarmEvaluator(project_scope=project_scope)
@@ -46,10 +47,10 @@ def run_evaluation(name, dataset_path):
     # performs consistently better across a larger set of inputs
     path = str(pathlib.Path.cwd() / dataset_path)
 
-    output_path = "./evaluation/eval_results/eval_results.jsonl"
+    output_path = str(pathlib.Path.cwd() / "./evaluation/eval_results/eval_results.jsonl")
 
     result = evaluate(
-        target=copilot_qna,
+        # target=copilot_qna,
         evaluation_name=name,
         data=path,
         evaluators={
@@ -58,18 +59,17 @@ def run_evaluation(name, dataset_path):
             "sexual": sexual_eval,
             "hate_unfairnes": hateunfairness_eval
         },
+        # optionally specify input fields if they are different
         evaluator_config={
-            "violence": {"question": "${data.chat_input}"},
-            "self_harm": {"question": "${data.chat_input}"},
-            "sexual": {"question": "${data.chat_input}"},
-            "hate_unfairnes": {"question": "${data.chat_input}"}
+            "violence": {"question": "${data.question}"},
+            "self_harm": {"question": "${data.question}"},
+            "sexual": {"question": "${data.question}"},
+            "hate_unfairnes": {"question": "${data.question}"}
         },
-        output_path=output_path  # not supported yet, this is a noop, see line 71
+        output_path=output_path
     )
     
     tabular_result = pd.DataFrame(result.get("rows"))
-    # UPCOMING: this line will be handled by output_path in evaluate function
-    tabular_result.to_json(output_path, orient="records", lines=True) 
 
     return result, tabular_result
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     evaluation_name = args.evaluation_name if args.evaluation_name else "test-sdk-copilot"
-    dataset_path = args.dataset_path if args.dataset_path else "./evaluation/evaluation_adversarial_nojailbrea.jsonl"
+    dataset_path = args.dataset_path if args.dataset_path else "./evaluation/adv_qa_pairs.jsonl"
 
     result, tabular_result = run_evaluation(name=evaluation_name,
                               dataset_path=dataset_path)
