@@ -13,7 +13,7 @@ blinker==1.8.2
 rapidfuzz==3.9.3
 six==1.16.0
 pycparser==2.22
-urllib3==2.2.1
+urllib3==2.2.2
 oauthlib==3.2.2
 filetype==1.2.0
 jsonpickle==3.2.1
