@@ -34,9 +34,9 @@ def copilot_qna(*, chat_input, **kwargs):
 def run_evaluation(eval_name, dataset_path):
 
     model_config = AzureOpenAIModelConfiguration(
-        azure_deployment=os.getenv("AZURE_OPENAI_EVALUATION_DEPLOYMENT"),
-        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+        azure_deployment=os.environ["AZURE_OPENAI_EVALUATION_DEPLOYMENT"],
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
     )
 
     # Initializing Evaluators

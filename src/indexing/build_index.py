@@ -20,13 +20,13 @@ def build_aisearch_index(index_name, path_to_data):
       name=index_name,  # name of your index
     vector_store="azure_ai_search",  # the type of vector store - in this case it is Azure AI Search. Users can also use "azure_cognitive search"
     embeddings_model_config=EmbeddingsModelConfig(
-      model_name=os.getenv('AZURE_OPENAI_EMBEDDING_DEPLOYMENT'),
-      deployment_name=os.getenv('AZURE_OPENAI_EMBEDDING_DEPLOYMENT'),
+      model_name=os.environ['AZURE_OPENAI_EMBEDDING_DEPLOYMENT'],
+      deployment_name=os.environ['AZURE_OPENAI_EMBEDDING_DEPLOYMENT'],
       connection_config=ConnectionConfig(
         subscription_id=client.subscription_id,
         resource_group_name=client.resource_group_name,
         workspace_name=client.workspace_name,
-        connection_name=os.getenv('AZURE_OPENAI_CONNECTION_NAME')
+        connection_name=os.environ['AZURE_OPENAI_CONNECTION_NAME']
       )
     ),
     input_source=LocalSource(input_data=path_to_data),  # the location of your files/folders

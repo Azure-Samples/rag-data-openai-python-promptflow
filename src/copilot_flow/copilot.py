@@ -21,9 +21,9 @@ class ChatResponse(TypedDict):
 @trace
 def get_chat_response(chat_input: str, chat_history: list = []) -> ChatResponse:
     model_config = AzureOpenAIModelConfiguration(
-        azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT"),
-        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+        azure_deployment=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT"],
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
     )
 
     searchQuery = chat_input
@@ -64,23 +64,26 @@ def get_chat_response(chat_input: str, chat_history: list = []) -> ChatResponse:
 @trace
 def get_documents(search_query: str, num_docs=3):
 
-    index_name = os.getenv("AZUREAI_SEARCH_INDEX_NAME")
+    index_name = os.environ["AZUREAI_SEARCH_INDEX_NAME"]
 
     #  retrieve documents relevant to the user's question from Cognitive Search
     search_client = SearchClient(
-        endpoint=os.getenv("AZURE_SEARCH_ENDPOINT"),
+        endpoint=os.environ["AZURE_SEARCH_ENDPOINT"],
         credential=DefaultAzureCredential(),
-        index_name=index_name)
+        index_name=index_name
+        )
 
     aoai_client = AzureOpenAI(
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
         azure_ad_token_provider=get_bearer_token_provider(DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"),
-        api_version=os.getenv("AZURE_OPENAI_API_VERSION")
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"]
     )
 
     # generate a vector embedding of the user's question
-    embedding = aoai_client.embeddings.create(input=search_query,
-                                            model=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT"))
+    embedding = aoai_client.embeddings.create(
+        input=search_query,
+        model=os.environ["AZURE_OPENAI_EMBEDDING_DEPLOYMENT"]
+        )
     embedding_to_query = embedding.data[0].embedding
 
     context = ""

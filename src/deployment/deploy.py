@@ -68,13 +68,13 @@ def deploy_flow(endpoint_name, deployment_name):
             "PRT_CONFIG_OVERRIDE": f"deployment.subscription_id={client.subscription_id},deployment.resource_group={client.resource_group_name},deployment.workspace_name={client.workspace_name},deployment.endpoint_name={endpoint_name},deployment.deployment_name={deployment_name}",
             # the following is enabled by secret injection
             # make sure your environment variables here match the environment variables your code depends on
-            'AZURE_OPENAI_ENDPOINT': os.getenv('AZURE_OPENAI_ENDPOINT'),
-            'AZURE_SEARCH_ENDPOINT':  os.getenv('AZURE_SEARCH_ENDPOINT'),
-            'AZURE_OPENAI_API_VERSION': os.getenv('AZURE_OPENAI_API_VERSION'),
-            'AZURE_OPENAI_CHAT_DEPLOYMENT': os.getenv('AZURE_OPENAI_CHAT_DEPLOYMENT'),
-            'AZURE_OPENAI_EVALUATION_DEPLOYMENT': os.getenv('AZURE_OPENAI_EVALUATION_DEPLOYMENT'),
-            'AZURE_OPENAI_EMBEDDING_DEPLOYMENT': os.getenv('AZURE_OPENAI_EMBEDDING_DEPLOYMENT'),
-            'AZUREAI_SEARCH_INDEX_NAME': os.getenv('AZUREAI_SEARCH_INDEX_NAME')
+            'AZURE_OPENAI_ENDPOINT': os.environ['AZURE_OPENAI_ENDPOINT'],
+            'AZURE_SEARCH_ENDPOINT':  os.environ['AZURE_SEARCH_ENDPOINT'],
+            'AZURE_OPENAI_API_VERSION': os.environ['AZURE_OPENAI_API_VERSION'],
+            'AZURE_OPENAI_CHAT_DEPLOYMENT': os.environ['AZURE_OPENAI_CHAT_DEPLOYMENT'],
+            'AZURE_OPENAI_EVALUATION_DEPLOYMENT': os.environ['AZURE_OPENAI_EVALUATION_DEPLOYMENT'],
+            'AZURE_OPENAI_EMBEDDING_DEPLOYMENT': os.environ['AZURE_OPENAI_EMBEDDING_DEPLOYMENT'],
+            'AZUREAI_SEARCH_INDEX_NAME': os.environ['AZUREAI_SEARCH_INDEX_NAME']
         }
     )
 
@@ -90,20 +90,23 @@ def deploy_flow(endpoint_name, deployment_name):
 
     # 4. provide endpoint access to Azure Open AI resource
     create_role_assignment(
-        scope=f"/subscriptions/{os.getenv("AZURE_SUBSCRIPTION_ID")}/resourceGroups/{os.getenv("AZURE_RESOURCE_GROUP")}/providers/Microsoft.CognitiveServices/accounts/{os.getenv("AZURE_OPENAI_CONNECTION_NAME")}",
+        scope=f"/subscriptions/{os.environ["AZURE_SUBSCRIPTION_ID"]}/resourceGroups/{os.environ["AZURE_RESOURCE_GROUP"]}/providers/Microsoft.CognitiveServices/accounts/{os.environ["AZURE_OPENAI_CONNECTION_NAME"]}",
         role_name="Cognitive Services OpenAI User",
-        principal_id=endpoint.identity.principal_id)
+        principal_id=endpoint.identity.principal_id
+        )
 
     # 5. provide endpoint access to Azure AI Search resource
     create_role_assignment(
-        scope=f"/subscriptions/{os.getenv("AZURE_SUBSCRIPTION_ID")}/resourceGroups/{os.getenv("AZURE_RESOURCE_GROUP")}/providers/Microsoft.Search/searchServices/{os.getenv("AZURE_SEARCH_CONNECTION_NAME")}",
+        scope=f"/subscriptions/{os.environ["AZURE_SUBSCRIPTION_ID"]}/resourceGroups/{os.environ["AZURE_RESOURCE_GROUP"]}/providers/Microsoft.Search/searchServices/{os.environ["AZURE_SEARCH_CONNECTION_NAME"]}",
         role_name="Search Index Data Contributor",
-        principal_id=endpoint.identity.principal_id)
+        principal_id=endpoint.identity.principal_id
+        )
     
     output_deployment_details(
         client=client,
         endpoint_name=endpoint_name,
-        deployment_name=deployment_name)
+        deployment_name=deployment_name
+        )
 
 def create_role_assignment(scope, role_name, principal_id):
     
@@ -113,7 +116,8 @@ def create_role_assignment(scope, role_name, principal_id):
     # Instantiate the authorization management client
     auth_client = AuthorizationManagementClient(
         credential=credential,
-        subscription_id=os.getenv("AZURE_SUBSCRIPTION_ID"))
+        subscription_id=os.environ["AZURE_SUBSCRIPTION_ID"]
+        )
     
     roles = list(auth_client.role_definitions.list(
         scope,
@@ -126,13 +130,15 @@ def create_role_assignment(scope, role_name, principal_id):
     parameters = RoleAssignmentCreateParameters(
         role_definition_id=role.id,
         principal_id=principal_id,
-        principal_type="ServicePrincipal")
+        principal_type="ServicePrincipal"
+        )
     
     # Create role assignment
     role_assignment = auth_client.role_assignments.create(
         scope=scope,
         role_assignment_name=uuid.uuid4(),
-        parameters=parameters)
+        parameters=parameters
+        )
     
     return role_assignment
 
