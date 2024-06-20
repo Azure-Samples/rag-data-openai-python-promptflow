@@ -7,6 +7,7 @@ Following the below steps, you will: set up your development environment, create
 > [!IMPORTANT]
 > We do not guarantee the quality of responses produced by these samples or their suitability for use in your scenarios, and responses will vary as development of the samples is ongoing. You must perform your own validation the outputs of the application and its suitability for use within your company.
 
+
 ## Step 1: Az login
 If you haven't already done so, run `az login` to authenticate to Azure in your terminal.
     - Note: if you are running from within a Codespace or the curated VS Code cloud container, you will need to use `az login --use-device-code`
@@ -68,7 +69,15 @@ Our goal is to ground the LLM in our custom data (located in src > indexing > da
 
 ### Step 3a: Create a new index
 
-The following is a script to streamline index creation. It build the search index locally, and publishes it to your AI Studio project in the cloud.
+This step uses vector search with Azure OpenAI embeddings (e.g., ada-002) to encode your documents. First, you need to allow your Azure AI Search resource to access your Azure OpenAI resource in these roles:
+
+    - Cognitive Services OpenAI Contributor
+    - Cognitive Services Contributor
+    - (optionally if you need quota view) Cognitive Services Usages Reader
+ 
+Follow instructions on https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control to add role assignment in your Azure OpenAI resource.
+
+Next, run the following script designed to streamline index creation. It builds the search index locally, and publishes it to your AI Studio project in the cloud.
 
 ``` bash
 python -m indexing.build_index --index-name <desired_index_name> --path-to-data=indexing/data/product-info
@@ -115,10 +124,14 @@ Evaluation is a key part of developing a copilot application. Once you have vali
 
 Evaluation relies on an evaluation dataset. In this case, we have an evaluation dataset with chat_input, and then a target function that adds the LLM response and context to the evaluation dataset before running the evaluations.
 
-Running evaluation logs traces to cloud. Make sure you have logged in Azure CLI (az login, refer to Azure CLI doc for more informations) before execute below CLI command:
+We recommend logging your traces and evaluation results on AI studio. To do so, run the following command. Make sure you have logged in Azure CLI (az login, refer to Azure CLI doc for more informations) before executing it:
 ``` bash
 pf config set trace.destination=azureml://subscriptions/<subscription-id>/resourcegroups/<resource-group-name>/providers/Microsoft.MachineLearningServices/workspaces/<project-name>
 ```
+
+> [!NOTE]
+> This will configure your project with a Cosmos DB account for logging. It may take several minutes the first time you run an evaluation. 
+
 The following script streamlines the evaluation process. Update the evaluation code to set your desired evaluation metrics, or optionally evaluate on custom metrics. You can also change where the evaluation results get written to.
 
 ``` bash
@@ -133,20 +146,39 @@ This command generates one single custom evaluator called "Completeness" on a mu
 ``` bash
 python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset.jsonl --cot
 ```
-This commands generates evaluations on an adversarial dataset generated via our simulator. You can try the simulator by running evaluation/simulate_and_evaluate_online_endpoints.py. The command below uses the adversarial data to generate our four safety metrics. Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics).
+To run safety evaluations, you need to 1) simulate adversarial datasets (or provide your own) and 2) evaluate your copilot on the datasets. 
+
+1. To simulate, run evaluation/simulate_and_evaluate_online_endpoints.ipynb with step-by-step explanations. The notebook requires a deployed endpoint of a copilot application, for which you can either deploy the local copilot_flow (see **Step 6**) or supply your own application endpoint, and fill in the configuration in the notebook. The simulator calls will generate a baseline and a jailbreak dataset for built-in content harm metrics, which will be saved to local `adv_qa_pairs.jsonl` and `adv_qa_jailbreak_pairs.jsonl`. Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics). 
+
+> [!NOTE]
+> To measure defect rates on jailbreak attacks, compare the content harm defect rates on the baseline and the jailbreak datasets, and the differences in their defect rates constitute the defect rates for jailbreak attacks. That is, how likely your copilot will be jailbroken to surface harmful content if malicious prompts are injected into your already adversarial user queries. 
+
+2. To evaluate your copilot, run this command to generate a safety evaluation on the baseline dataset for the four built-in content harm metrics (self-harm, violence, sexual, hate and unfairness). 
 
 ``` bash
-python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail_jailbreak  --dataset-path=./evaluation/adversarial_questions_jailbreak.jsonl
+python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail  --dataset-path=./evaluation/adv_qa_pairs.jsonl
 ```
 
+Run this command to generate a safety evaluation on the jailbreak dataset on the four built-in content harm metrics (self-harm, violence, sexual, hate and unfairness). 
+
+``` bash
+python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail_jailbreak  --dataset-path=./evaluation/adv_qa_jailbreak_pairs.jsonl
+```
 
 We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models. The _evaluate.py_ script is set up to log your evaluation results to your AI Studio project. 
 
-> [!NOTE]
-> This will configure your project with a Cosmos DB account for logging. It may take several minutes the first time you run an evaluation.
+If you do not want to log evaluation results to your AI Studio project, you can run: 
 
+``` bash
+pf config set trace.destination="local"
+```
+to set logging to local, or run:
 
-If you do not want to log evaluation results to your AI Studio project, you can modify the _evaluation.py_ script to not pass the azure_ai_project parameter.
+``` bash
+pf config set trace.destination="none"
+```
+
+to disable this feature entirely.
 
 ## Step 6: Deploy application to AI Studio
 
@@ -154,7 +186,7 @@ Use the deployment script to deploy your application to Azure AI Studio. This wi
 
 You can make any changes to deployment specifications to fit your use case.
 > [!NOTE]
-> If you made any custom changes to your .env not covered in this README, make sure you reference them in the deploy.py script before you deploy so that they are available in the deployed environment.
+> If you made any custom changes to your .env not covered in this README, make sure you reference them in the deploy.py script before you deploy so that they are available in the deployed environment. You cannot deploy your app to an existing endpoint.  
 
 ``` bash
 python -m deployment.deploy --endpoint-name <endpoint_name> --deployment-name <deployment_name>
