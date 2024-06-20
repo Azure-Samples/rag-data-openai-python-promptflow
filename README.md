@@ -77,7 +77,7 @@ This step uses vector search with Azure OpenAI embeddings (e.g., ada-002) to enc
  
 Follow instructions on https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control to add role assignment in your Azure OpenAI resource.
 
-Next, run the following script designed to streamline index creation. It build the search index locally, and publishes it to your AI Studio project in the cloud.
+Next, run the following script designed to streamline index creation. It builds the search index locally, and publishes it to your AI Studio project in the cloud.
 
 ``` bash
 python -m indexing.build_index --index-name <desired_index_name> --path-to-data=indexing/data/product-info
@@ -146,20 +146,20 @@ This command generates one single custom evaluator called "Completeness" on a mu
 ``` bash
 python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset.jsonl --cot
 ```
-To run safety evaluations, you need to first simulate adversarial datasets (or provide your own) and then evaluate your copilot on the datasets. 
+To run safety evaluations, you need to 1) simulate adversarial datasets (or provide your own) and 2) evaluate your copilot on the datasets. 
 
-To simulate, run evaluation/simulate_and_evaluate_online_endpoints.ipynb with step-by-step explanations. The notebook requires a deployed endpoint of a copilot application, for which you can deploy the local copilot_flow by jumping to **Step 6** or supply your own application endpoint. The simulator calls will generate a baseline and a jailbreak dataset for built-in content harm metrics, which will be saved to local `adv_qa_pairs.jsonl` and `adv_qa_jailbreak_pairs.jsonl`. Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics). 
+1. To simulate, run evaluation/simulate_and_evaluate_online_endpoints.ipynb with step-by-step explanations. The notebook requires a deployed endpoint of a copilot application, for which you can either deploy the local copilot_flow (see **Step 6**) or supply your own application endpoint, and fill in the configuration in the notebook. The simulator calls will generate a baseline and a jailbreak dataset for built-in content harm metrics, which will be saved to local `adv_qa_pairs.jsonl` and `adv_qa_jailbreak_pairs.jsonl`. Learn more about our built-in safety metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#risk-and-safety-metrics). 
 
 > [!NOTE]
-> To measure defect rates on jailbreak attacks, compare the content harm defect rates on the baseline and the jailbreak dataset, and the differences in the defect rates constitute the defect rates for jailbreak attacks. That is, how likely your copilot will be jailbroken to surface harmful content if malicious prompts are injected into your already adversarial user queries. 
+> To measure defect rates on jailbreak attacks, compare the content harm defect rates on the baseline and the jailbreak datasets, and the differences in their defect rates constitute the defect rates for jailbreak attacks. That is, how likely your copilot will be jailbroken to surface harmful content if malicious prompts are injected into your already adversarial user queries. 
 
-To evaluate your copilot, run this command to generate a safety evaluation on the baseline dataset for the four built-in content harm metrics (self-harm, violence, sexual, hate and unfairness). 
+2. To evaluate your copilot, run this command to generate a safety evaluation on the baseline dataset for the four built-in content harm metrics (self-harm, violence, sexual, hate and unfairness). 
 
 ``` bash
 python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail  --dataset-path=./evaluation/adv_qa_pairs.jsonl
 ```
 
-This command generates a safety evaluation on the jailbreak dataset on the four metrics.
+Run this command to generate a safety evaluation on the jailbreak dataset on the four built-in content harm metrics (self-harm, violence, sexual, hate and unfairness). 
 
 ``` bash
 python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_retail_jailbreak  --dataset-path=./evaluation/adv_qa_jailbreak_pairs.jsonl
@@ -167,11 +167,18 @@ python -m evaluation.evaluatesafetyrisks --evaluation-name safety_evals_contoso_
 
 We recommend viewing your evaluation results in the Azure AI Studio, to compare evaluation runs with different prompts, or even different models. The _evaluate.py_ script is set up to log your evaluation results to your AI Studio project. 
 
-If you do not want to log evaluation results to your AI Studio project, set the destination value to "local" for local logging, or "none" to disable the logging feature entirely. 
+If you do not want to log evaluation results to your AI Studio project, you can run: 
 
 ``` bash
-pf config set trace.destination=<"local" or "none"> 
+pf config set trace.destination="local"
 ```
+to set logging to local, or run:
+
+``` bash
+pf config set trace.destination="none"
+```
+
+to disable this feature entirely.
 
 ## Step 6: Deploy application to AI Studio
 
