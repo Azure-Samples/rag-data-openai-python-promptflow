@@ -1,5 +1,5 @@
 openai
-azure-identity==1.16.0
+azure-identity==1.16.1
 azure-search-documents==11.4.0
 azure-ai-ml==1.16.0
 promptflow[azure]==1.11.0
