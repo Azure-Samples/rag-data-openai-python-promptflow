@@ -81,7 +81,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     evaluation_name = args.evaluation_name if args.evaluation_name else "test-sdk-copilot"
-    dataset_path = args.dataset_path if args.dataset_path else "./evaluation/adv_qa_outputs.jsonl"
+    dataset_path = args.dataset_path if args.dataset_path else "./evaluation/adv_qa_pairs.jsonl"
 
     result, tabular_result = run_evaluation(name=evaluation_name,
                               dataset_path=dataset_path)
