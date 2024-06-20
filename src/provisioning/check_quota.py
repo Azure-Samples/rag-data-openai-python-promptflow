@@ -124,7 +124,7 @@ def main():
         "--subscription-id",
         help="Azure subscription id",
         type=str,
-        default=os.getenv("AZURE_SUBSCRIPTION_ID"),
+        default=os.environ["AZURE_SUBSCRIPTION_ID"]
     )
     args = parser.parse_args()
 

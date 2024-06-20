@@ -1,9 +1,10 @@
-from azure.ai.ml import MLClient
-from azure.identity import DefaultAzureCredential
-
 import os
+# set environment variables before importing any other code
 from dotenv import load_dotenv
 load_dotenv()
+
+from azure.ai.ml import MLClient
+from azure.identity import DefaultAzureCredential
 
 def get_client() -> MLClient:
   # check if env variables are set and initialize client from those

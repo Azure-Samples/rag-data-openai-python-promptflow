@@ -60,10 +60,8 @@ environment:
     # these env vars are drawn from the AI hub connections
     AZURE_OPENAI_CONNECTION_NAME: "${aoai.connection_name}"
     AZURE_OPENAI_ENDPOINT: "azureml://connections/${aoai.connection_name}/target"
-    AZURE_OPENAI_API_KEY: "azureml://connections/${aoai.connection_name}/credentials/key"
     AZURE_SEARCH_CONNECTION_NAME: "${search.connection_name}"
     AZURE_SEARCH_ENDPOINT: "azureml://connections/${search.connection_name}/target"
-    AZURE_SEARCH_KEY: "azureml://connections/${search.connection_name}/credentials/key"
     # these are constants used by this sample code - they can be modified for your use cases
     AZURE_OPENAI_API_VERSION: "2023-03-15-preview"
     AZURE_OPENAI_CHAT_DEPLOYMENT: "${aoai.deployments[0].name}"

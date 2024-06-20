@@ -38,10 +38,10 @@ def copilot_qna(*, chat_input, **kwargs):
 def run_evaluation(name, dataset_path, prompty_filename: str):
 
     model_config = AzureOpenAIModelConfiguration(
-        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-        azure_deployment=os.environ.get("AZURE_OPENAI_EVALUATION_DEPLOYMENT"),
-    )
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+        azure_deployment=os.environ["AZURE_OPENAI_EVALUATION_DEPLOYMENT"]
+        )
 
     # Initializing Evaluators
     # relevance_eval = RelevanceEvaluator(model_config)
