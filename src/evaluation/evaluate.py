@@ -1,12 +1,10 @@
-
 import json
 import pathlib
-
+import os
 # set environment variables before importing any other code
 from dotenv import load_dotenv
 load_dotenv()
 
-import os
 import pandas as pd
 from pprint import pprint
 
@@ -33,12 +31,12 @@ def copilot_qna(*, chat_input, **kwargs):
     }
     return parsedResult
 
-def run_evaluation(name, dataset_path):
+def run_evaluation(eval_name, dataset_path):
 
     model_config = AzureOpenAIModelConfiguration(
-        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-        azure_deployment=os.environ.get("AZURE_OPENAI_EVALUATION_DEPLOYMENT"),
+        azure_deployment=os.getenv("AZURE_OPENAI_EVALUATION_DEPLOYMENT"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
     )
 
     # Initializing Evaluators
@@ -59,7 +57,7 @@ def run_evaluation(name, dataset_path):
 
     result = evaluate(
         target=copilot_qna,
-        evaluation_name=name,
+        evaluation_name=eval_name,
         data=path,
         evaluators={
             "groundedness": groundedness_eval,
@@ -68,7 +66,6 @@ def run_evaluation(name, dataset_path):
             "coherence": coherence_eval,
             "friendliness":friendliness_eval,
             #"completeness": completeness_eval
-
         },
         evaluator_config={
             "relevance": {"question": "${data.chat_input}"},
@@ -96,7 +93,7 @@ if __name__ == "__main__":
     evaluation_name = args.evaluation_name if args.evaluation_name else "test-sdk-copilot"
     dataset_path = args.dataset_path if args.dataset_path else "./evaluation/evaluation_dataset_small.jsonl"
 
-    result, tabular_result = run_evaluation(name=evaluation_name,
+    result, tabular_result = run_evaluation(eval_name=evaluation_name,
                               dataset_path=dataset_path)
 
     pprint("-----Summarized Metrics-----")

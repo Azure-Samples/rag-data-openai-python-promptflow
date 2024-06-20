@@ -5,8 +5,8 @@ model:
   api: chat
   configuration:
     type: azure_openai
-    azure_deployment: ${env:AZURE_DEPLOYMENT}
-    api_key: ${env:AZURE_OPENAI_API_KEY}
+    azure_deployment: ${env:AZURE_OPENAI_EVALUATION_DEPLOYMENT}
+    api_version: ${env:AZURE_OPENAI_API_VERSION}
     azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
   parameters:
     temperature: 0.0

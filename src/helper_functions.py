@@ -1,13 +1,14 @@
-from azure.ai.ml import MLClient
-from azure.identity import DefaultAzureCredential
-
 import os
+# set environment variables before importing any other code
 from dotenv import load_dotenv
 load_dotenv()
 
+from azure.ai.ml import MLClient
+from azure.identity import DefaultAzureCredential
+
 def get_client() -> MLClient:
   # check if env variables are set and initialize client from those
-  client = MLClient(DefaultAzureCredential(), os.environ["AZURE_SUBSCRIPTION_ID"], os.environ["AZURE_RESOURCE_GROUP"], os.environ["AZUREAI_PROJECT_NAME"])
+  client = MLClient(DefaultAzureCredential(), os.getenv("AZURE_SUBSCRIPTION_ID"), os.getenv("AZURE_RESOURCE_GROUP"), os.getenv("AZUREAI_PROJECT_NAME"))
   if client:
     return client
   
