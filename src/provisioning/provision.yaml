@@ -33,6 +33,12 @@ aoai:
   # specify existing deployments or specify new deployments to be created
   # you can find the deployment details on the Deployments page of your project in Azure AI Studio
   deployments:
+    - name: "gpt-4"
+      model: "gpt-4"
+      version: "turbo-2024-04-09"
+    - name: "gpt-4o"
+      model: "gpt-4o"
+      version: "2024-05-13"
     - name: "gpt-35-turbo"
       model: "gpt-35-turbo"
       version: "0301" # if you don't know, comment this line and we'll pick default

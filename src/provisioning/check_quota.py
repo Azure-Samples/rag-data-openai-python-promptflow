@@ -9,7 +9,8 @@ CANDIDATE_MODELS = [
     {"name": "gpt-35-turbo", "version": "1106", "sku": "Standard", "kind": "OpenAI"},
     {"name": "gpt-35-turbo", "version": "0301", "sku": "Standard", "kind": "OpenAI"},
     {"name": "gpt-35-turbo", "version": "0613", "sku": "Standard", "kind": "OpenAI"},
-    {"name": "gpt-4", "version": "1106-Preview", "sku": "Standard", "kind": "OpenAI"},
+    {"name": "gpt-4", "version": "turbo-2024-04-09", "sku": "Standard", "kind": "OpenAI"},
+    {"name": "gpt-4o", "version": "2024-05-13", "sku": "Standard", "kind": "OpenAI"},
 ]
 
 # list of regions in which to look for candidate models
