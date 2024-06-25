@@ -64,7 +64,7 @@ def run_evaluation(eval_name, dataset_path):
             "relevance": relevance_eval,
             "fluency": fluency_eval,
             "coherence": coherence_eval,
-            "friendliness":friendliness_eval,
+            "friendliness": friendliness_eval,
             #"completeness": completeness_eval
         },
         evaluator_config={
