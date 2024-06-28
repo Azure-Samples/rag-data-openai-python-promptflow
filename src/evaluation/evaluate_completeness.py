@@ -67,7 +67,7 @@ def run_evaluation(name, dataset_path):
         },
         evaluator_config={
             # only provide additional input fields that target and data do not have
-            "completeness": {"question": "${data.chat_input}", "answer": "${target.answer}"}
+            "completeness": {"question": "${data.chat_input}"}
         }
     )
     
