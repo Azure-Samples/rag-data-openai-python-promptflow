@@ -13,7 +13,7 @@ from promptflow.core import AzureOpenAIModelConfiguration
 
 
 class CompletenessEvaluator:
-    def __init__(self, model_config: AzureOpenAIModelConfiguration, prompty_filename: str = "completeness.prompty"):
+    def __init__(self, model_config: AzureOpenAIModelConfiguration):
         """
         Initialize an evaluator configured for a specific Azure OpenAI model.
 
@@ -37,7 +37,8 @@ class CompletenessEvaluator:
 
         prompty_model_config = {"configuration": model_config}
         current_dir = os.path.dirname(__file__)
-        prompty_path = os.path.join(current_dir, prompty_filename)
+        prompty_path = os.path.join(current_dir, "completeness.prompty")
+        assert os.path.exists(prompty_path), f"Please specify a valid prompty file for completeness metric! The following path does not exist:\n{prompty_path}"
         self._flow = load_flow(source=prompty_path, model=prompty_model_config)
 
     def __call__(self, *, question: str, answer: str, truth: str, **kwargs):

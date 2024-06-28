@@ -54,12 +54,12 @@ Click on "Settings" from the left menu of Azure AI Studio, scroll down to "Conne
 
 Once you set up those parameters, run:
 
-    ```bash
-    # Note: make sure you run this command from the src/ directory so that your .env is written to the correct location (src/)
-    cd src
-    python provisioning/provision.py --export-env .env
+```bash
+# Note: make sure you run this command from the src/ directory so that your .env is written to the correct location (src/)
+cd src
+python provisioning/provision.py --export-env .env
 
-    ```
+```
 
 The script will check whether the resources you specified exist, otherwise it will create them. It will then construct a .env for you that references the provisioned or referenced resources, including your keys. Once the provisioning is complete, you'll be ready to move to step 3.
 
@@ -73,9 +73,9 @@ This step uses vector search with Azure OpenAI embeddings (e.g., ada-002) to enc
 
     - Cognitive Services OpenAI Contributor
     - Cognitive Services Contributor
-    - (optionally if you need quota view) Cognitive Services Usages Reader
+    - (optionally if you need AOAI quota view) Cognitive Services Usages Reader
  
-Follow instructions on https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control to add role assignment in your Azure OpenAI resource.
+Follow instructions on https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/role-based-access-control to add role assignment in your Azure OpenAI resource. Note that Cognitive Services Usages Reader needs to be set at the subscription level. 
 
 Next, run the following script designed to streamline index creation. It builds the search index locally, and publishes it to your AI Studio project in the cloud.
 
@@ -140,11 +140,11 @@ python -m evaluation.evaluate --evaluation-name <evaluation_name>
 Examples:
 This command generates evaluations on a much larger test set and generates some built-in quality metrics such as groundedness and relevance, as well as a custom evaluator called "friendliness". Learn more about our built-in quality metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#generation-quality-metrics).
 ``` bash
-python -m evaluation.evaluate  --evaluation-name quality_evals_contoso_retail  --dataset-path=./evaluation/ContosoTestBuild.jsonl
+python -m evaluation.evaluate  --evaluation-name quality_evals_contoso_retail  --dataset-path=./evaluation/ContosoTestDataSmall.jsonl
 ```
 This command generates one single custom evaluator called "Completeness" on a much larger test set.
 ``` bash
-python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset.jsonl --cot
+python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset_small.jsonl
 ```
 To run safety evaluations, you need to 1) simulate adversarial datasets (or provide your own) and 2) evaluate your copilot on the datasets. 
 

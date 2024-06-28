@@ -30,24 +30,20 @@ def copilot_qna(*, chat_input, **kwargs):
     # turn generator response into a string for evaluation
     answer = "".join(str(item) for item in result["reply"])
     parsedResult = {
-        # "question": chat_input,
         "answer": answer
     }
     return parsedResult
 
-def run_evaluation(name, dataset_path, prompty_filename: str):
-
+def run_evaluation(name, dataset_path):
+    
     model_config = AzureOpenAIModelConfiguration(
         azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
         api_version=os.environ["AZURE_OPENAI_API_VERSION"],
         azure_deployment=os.environ["AZURE_OPENAI_EVALUATION_DEPLOYMENT"]
-        )
+    )
 
     # Initializing Evaluators
-    # relevance_eval = RelevanceEvaluator(model_config)
-    # groundedness_eval = GroundednessEvaluator(model_config)
-    # coherence_eval = CoherenceEvaluator(model_config)
-    completeness_eval = CompletenessEvaluator(model_config, prompty_filename=prompty_filename)
+    completeness_eval = CompletenessEvaluator(model_config)
 
     # Running Relevance Evaluator on single input row
     completeness_score = completeness_eval(
@@ -60,24 +56,19 @@ def run_evaluation(name, dataset_path, prompty_filename: str):
     print("testing completeness score on dummy input: ", completeness_score)
 
     data_path = str(pathlib.Path.cwd() / dataset_path)
-    output_path = "./evaluation/eval_results/eval_results.jsonl"
+    output_path = str(pathlib.Path.cwd() / "evaluation/eval_results/eval_results.jsonl")
 
     result = evaluate(
         target=copilot_qna,
         evaluation_name=name,
         data=data_path,
         evaluators={
-            # "relevance": relevance_eval,
-            # "groundedness": groundedness_eval,
-            # "coherence": coherence_eval
             "completeness": completeness_eval
         },
         evaluator_config={
-            # "relevance": {"question": "${data.chat_input}"},
-            # "coherence": {"question": "${data.chat_input}"},
-            # only provide additional input that output of target does not provide
-            "completeness": {"question": "${data.chat_input}"}, "answer": "${data.answer}", "truth": "${data.truth}"
-        },
+            # only provide additional input fields that target and data do not have
+            "completeness": {"question": "${data.chat_input}"}
+        }
     )
     
     tabular_result = pd.DataFrame(result.get("rows"))
@@ -90,20 +81,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluation-name", help="evaluation name used to log the evaluation to AI Studio", type=str)
     parser.add_argument("--dataset-path", help="Test dataset to use with evaluation", type=str)
-    parser.add_argument("--cot", help="Requires explanations to evaluation", action="store_true")
     args = parser.parse_args()
 
     evaluation_name = args.evaluation_name if args.evaluation_name else "test-sdk-copilot"
     dataset_path = args.dataset_path if args.dataset_path else "./evaluation/evaluation_dataset_small.jsonl"
     
-    prompty_filename = "completeness" 
-    if args.cot:
-        prompty_filename += "_cot"
-    prompty_filename += ".prompty"
-    print(f"running {prompty_filename}")
-
-    result, tabular_result = run_evaluation(name=evaluation_name,
-                              dataset_path=dataset_path, prompty_filename=prompty_filename)
+    result, tabular_result = run_evaluation(name=evaluation_name, dataset_path=dataset_path)
 
     pprint("-----Summarized Metrics-----")
     pprint(result["metrics"])
