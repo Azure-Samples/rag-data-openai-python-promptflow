@@ -53,7 +53,7 @@ def run_evaluation(eval_name, dataset_path):
     # performs consistently better across a larger set of inputs
     path = str(pathlib.Path.cwd() / dataset_path)
 
-    output_path = "./evaluation/eval_results/eval_results.jsonl"
+    output_path = str(pathlib.Path.cwd() / "evaluation/eval_results/eval_results.jsonl")
 
     result = evaluate(
         target=copilot_qna,

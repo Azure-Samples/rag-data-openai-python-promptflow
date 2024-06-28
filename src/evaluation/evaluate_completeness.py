@@ -56,7 +56,7 @@ def run_evaluation(name, dataset_path):
     print("testing completeness score on dummy input: ", completeness_score)
 
     data_path = str(pathlib.Path.cwd() / dataset_path)
-    output_path = "./evaluation/eval_results/eval_results.jsonl"
+    output_path = str(pathlib.Path.cwd() / "evaluation/eval_results/eval_results.jsonl")
 
     result = evaluate(
         target=copilot_qna,
@@ -67,7 +67,7 @@ def run_evaluation(name, dataset_path):
         },
         evaluator_config={
             # only provide additional input fields that target and data do not have
-            "completeness": {"question": "${data.chat_input}"}
+            "completeness": {"question": "${data.chat_input}", "answer": "${target.answer}"}
         }
     )
     

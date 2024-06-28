@@ -140,11 +140,11 @@ python -m evaluation.evaluate --evaluation-name <evaluation_name>
 Examples:
 This command generates evaluations on a much larger test set and generates some built-in quality metrics such as groundedness and relevance, as well as a custom evaluator called "friendliness". Learn more about our built-in quality metrics [here](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/evaluation-metrics-built-in?tabs=warning#generation-quality-metrics).
 ``` bash
-python -m evaluation.evaluate  --evaluation-name quality_evals_contoso_retail  --dataset-path=./evaluation/ContosoTestBuild.jsonl
+python -m evaluation.evaluate  --evaluation-name quality_evals_contoso_retail  --dataset-path=./evaluation/ContosoTestDataSmall.jsonl
 ```
 This command generates one single custom evaluator called "Completeness" on a much larger test set.
 ``` bash
-python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset.jsonl
+python -m evaluation.evaluate_completeness  --evaluation-name completeness_evals_contoso_retail  --dataset-path=./evaluation/evaluation_dataset_small.jsonl
 ```
 To run safety evaluations, you need to 1) simulate adversarial datasets (or provide your own) and 2) evaluate your copilot on the datasets. 
 
