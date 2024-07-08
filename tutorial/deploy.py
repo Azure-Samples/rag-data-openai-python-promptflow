@@ -99,7 +99,7 @@ endpoint.traffic = {deployment_name: 100}  # 100% of traffic
 client.begin_create_or_update(endpoint).result()
 # </deploy>
 
-# <report>
+# <status>
 def get_ai_studio_url_for_deploy(
     client: MLClient, endpoint_name: str, deployment_name
 ) -> str:
@@ -120,4 +120,4 @@ print(
         client=client, endpoint_name=endpoint_name, deployment_name=deployment_name
     )
 )
-# </report>
+# </status>
