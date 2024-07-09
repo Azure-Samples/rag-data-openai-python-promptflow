@@ -1,0 +1,3 @@
+entry: copilot:get_chat_response
+environment:
+  python_requirements_txt: requirements.txt
