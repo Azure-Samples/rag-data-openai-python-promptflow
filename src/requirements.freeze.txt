@@ -30,7 +30,7 @@ click==8.1.7
 entrypoints==0.4
 fonttools==4.53.0
 greenlet==3.0.3
-certifi==2024.6.2
+certifi==2024.7.4
 pyparsing==3.1.2
 rpds-py==0.18.1
 typing_extensions==4.12.2
