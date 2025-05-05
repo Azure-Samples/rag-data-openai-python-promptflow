@@ -1,3 +1,4 @@
+[![Board Status](https://dev.azure.com/lifecoach121/f1e5361a-d508-413b-9199-9da5e45dfd81/b1050ec5-158b-4dd5-8a84-2f94064aa159/_apis/work/boardbadge/c71a2581-6ab9-471f-b390-4feffde7604c)](https://dev.azure.com/lifecoach121/f1e5361a-d508-413b-9199-9da5e45dfd81/_boards/board/t/b1050ec5-158b-4dd5-8a84-2f94064aa159/Microsoft.RequirementCategory)
 # Copilot application that implements RAG
 
 This is a sample copilot that application that implements RAG via custom Python code, and can be used with the Azure AI Studio. This sample aims to provide a starting point for an enterprise copilot grounded in custom data that you can further customize to add additional intelligence or capabilities.  
